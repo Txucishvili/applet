@@ -1,0 +1,20 @@
+@import '../functions';
+
+// default theme
+
+$color-space-cadet:#1B1F3A;
+$color-dark-bryzantium:#53354A;
+$color-medium-carmine:#A64942;
+$color-coral:#FF7844;
+
+$default-theme: (background-color: darken($color-space-cadet, 9%),
+	side-nav-bg-color: darken($color-space-cadet, 0%),
+	side-nav-item-color: darken($color-space-cadet, 5%),
+	side-nav-item-h-color: darken($color-space-cadet, 3%),
+	side-nav-item-active-color: darken($color-space-cadet, 9%),
+  header-bg-color: darken($color-space-cadet, 5%)
+);
+
+.theme-default {
+	@include _setThemeVars($default-theme)
+}

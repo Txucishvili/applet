@@ -1,0 +1,51 @@
+@import '../functions';
+// default theme
+
+// // light theme
+// $light-theme-primary: #888888;
+
+// $light-theme: (
+// 	background-color: darken($light-theme-primary, 9%),
+// 	side-nav-bg-color: darken($light-theme-primary, 0%),
+// 	side-nav-item-color: darken($light-theme-primary, 5%),
+// 	side-nav-item-h-color: darken($light-theme-primary, 9%),
+// );
+
+
+// .theme-light {
+// 	@include _setThemeVars($light-theme)
+// }
+
+
+// // light theme
+// $custom-theme-primary: #123533;
+
+// $custom-theme: (
+// 	background-color: darken($custom-theme-primary, 9%),
+// 	side-nav-bg-color: darken($custom-theme-primary, 0%),
+// 	side-nav-item-color: darken($custom-theme-primary, 5%),
+// 	side-nav-item-h-color: darken($custom-theme-primary, 9%),
+// );
+
+// .theme-custom {
+// 	@include _setThemeVars($custom-theme)
+// }
+
+// //
+
+$color-space-cadet:#1B1F3A;
+$color-dark-bryzantium:#53354A;
+$color-medium-carmine:#A64942;
+$color-coral:#FF7844;
+
+$default-theme: (
+	background-color: darken($color-space-cadet, 9%),
+	side-nav-bg-color: darken($color-space-cadet, 0%),
+	side-nav-item-color: darken($color-space-cadet, 5%),
+	side-nav-item-h-color: darken($color-space-cadet, 9%),
+);
+
+:root {
+	@include _setThemeVars($default-theme)
+}
+

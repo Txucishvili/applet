@@ -1,0 +1,16 @@
+@import '../functions';
+
+// light theme
+$light-theme-primary: #888888;
+
+$light-theme: (
+	background-color: darken($light-theme-primary, 9%),
+	side-nav-bg-color: darken($light-theme-primary, 0%),
+	side-nav-item-color: darken($light-theme-primary, 5%),
+	side-nav-item-h-color: darken($light-theme-primary, 9%),
+);
+
+
+.theme-light {
+	@include _setThemeVars($light-theme)
+}

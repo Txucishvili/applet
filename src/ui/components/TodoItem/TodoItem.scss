@@ -1,0 +1,25 @@
+
+.todo-item {
+  &--wrap {
+    border-radius: 12px;
+    padding: 20px;
+    background-color: var(---side-nav-bg-color);
+    margin-bottom: 20px;
+    height: 125px;
+    display: flex;
+    flex-direction: column;
+  }
+  &--actions {
+    padding: 10px 0 0 0;
+    margin-top: auto;
+    button {
+      background-color: transparent;
+      color: #FFF;
+      border: 1px solid rgba(#fff, .5);
+
+      &:active, &:hover {
+        background-color: rgba(#fff, .2);
+      }
+    }
+  }
+}

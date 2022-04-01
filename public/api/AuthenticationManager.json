@@ -1,0 +1,7 @@
+{
+    "userName": "Manager",
+    "token": "user-token-2",
+    "email": "manager@email.com",
+    "roles": ["user", "manager"],
+    "type": "manager"
+}

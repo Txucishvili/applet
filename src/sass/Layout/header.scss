@@ -1,0 +1,12 @@
+.header {
+  &--wrap {
+    padding: 20px;
+    background-color: var(---header-bg-color);
+    border-radius: 12px;
+  }
+
+  &--title {
+    @include Font-IBMPlexMono($size: 26, $weight: 800, $spacing: 1.2px);
+  }
+
+}

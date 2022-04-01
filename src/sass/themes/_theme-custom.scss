@@ -1,0 +1,17 @@
+@import '../functions';
+
+// light theme
+$custom-theme-primary: #123533;
+
+$custom-theme: (
+	background-color: darken($custom-theme-primary, 9%),
+	side-nav-bg-color: darken($custom-theme-primary, 0%),
+	side-nav-item-color: darken($custom-theme-primary, 5%),
+	side-nav-item-h-color: darken($custom-theme-primary, 3%),
+	side-nav-item-active-color: darken($custom-theme-primary, 7%),
+  header-bg-color: darken($custom-theme-primary, 5%)
+);
+
+.theme-custom {
+	@include _setThemeVars($custom-theme)
+}

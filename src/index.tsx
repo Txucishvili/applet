@@ -1,17 +1,21 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+// 
+// booting app
+// 
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+import {bootConfig} from "./boot/boot";
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+const initApp = () => {
+  import(
+      /* webpackChunkName: "app" */
+      `./AppInit`
+  )
+}
+
+const init = () => {
+  bootConfig();
+  initApp();
+};
+
+init();
+
+export {init};

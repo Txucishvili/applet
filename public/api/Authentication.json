@@ -1,0 +1,7 @@
+{
+    "userName": "john",
+    "token": "user-token",
+    "email": "user@email.com",
+    "roles": ["user"],
+    "type": "user"
+}

@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+      "@ui/*": [
+        "./src/ui/*"
+      ],
+      "@sass/*": [
+        "./src/sass/*"
+      ]
+    }
+  },
+  "include": [
+    "./",
+    "./src"
+  ]
+}

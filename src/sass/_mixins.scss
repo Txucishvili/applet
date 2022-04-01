@@ -1,0 +1,58 @@
+@import '~sassync';
+
+
+@mixin _setThemeVars($theme) {
+	@each $el in map-keys($theme) {
+		---#{$el}: #{map-get($theme, $el)};
+		@content;
+	}
+}
+
+@mixin setTheme($name, $theme) {
+	$prefix: $name;
+
+	@if($name==root) {
+		$prefix: ':root';
+	}
+
+	#{$prefix} {
+		@include _setThemeVars($theme);
+	}
+}
+
+$font-AlfaSlabOne: 'Alfa Slab One',
+cursive;
+
+$font-DelaGhoticOne: 'Dela Gothic One',
+cursive;
+
+$font-IBMPlexMono: 'IBM Plex Mono',
+monospace;
+
+@mixin Font-style($family: 'Tahome', $size: 12, $weight: 600, $line-height: 1.2, $spacing: 1px) {
+  font-family: $family;
+  font-size: em($size);
+  line-height: $line-height;
+  letter-spacing: $spacing;
+  font-weight: $weight;
+  @content;
+}
+
+@mixin Font-AlfaSlabOne($size: 12, $weight: 600, $line-height: 1.2, $spacing: 1px) {
+  @include Font-style( $font-AlfaSlabOne, $size, $weight, $line-height, $spacing);
+  @content;
+}
+
+
+@mixin Font-DelaGhoticOne($size: 12, $weight: 600, $line-height: 1.2, $spacing: 1px) {
+  @include Font-style( $font-DelaGhoticOne, $size, $weight, $line-height, $spacing);
+
+  @content;
+}
+
+
+
+@mixin Font-IBMPlexMono($size: 12, $weight: 600, $line-height: 1.2, $spacing: 1px) {
+  @include Font-style($font-IBMPlexMono, $size, $weight, $line-height, $spacing);
+  @content;
+}

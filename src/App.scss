@@ -1,0 +1,9 @@
+@import '~sassync/sass/_default/_theme/reset';
+
+@import '~sassync';
+
+body {
+    background-color: var(---background-color);
+    color: #FFF;
+    // transition: background-color .15s ease-in-out;
+}
