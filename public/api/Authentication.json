@@ -3,5 +3,6 @@
     "token": "user-token",
     "email": "user@email.com",
     "roles": ["user"],
-    "type": "user"
+    "type": "user",
+    "theme": "theme-custom"
 }

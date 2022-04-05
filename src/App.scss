@@ -3,7 +3,12 @@
 @import '~sassync';
 
 body {
-    background-color: var(---background-color);
-    color: #FFF;
-    // transition: background-color .15s ease-in-out;
+  background-color: #FFF;
+  color: #FFF;
+  // transition: background-color .15s ease-in-out;
+}
+
+.App {
+  min-height: 100vh; // !!!
+  background-color: var(---background-color);
 }

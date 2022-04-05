@@ -1,7 +1,8 @@
 import React, { useRef } from 'react'
 import './TodoItem.scss'
 
-export default function TodoItem(props: any) {
+export function TodoItem(props: any) {
+  // console.log('-----------', props)
   const { item, actionButtons }: any = props ?? {};
   const ActionButtons = actionButtons;
   const actionsArea = useRef(null);
@@ -13,7 +14,7 @@ export default function TodoItem(props: any) {
           fontSize: 24,
           fontWeight: 600
         }}>
-        {item.key}
+        {item.id}
         </h1> 
         <div style={{marginTop: 4}}>
         {item.title}
@@ -28,3 +29,7 @@ export default function TodoItem(props: any) {
     </div>
   )
 }
+
+// const Memorized = React.memo(TodoItem, () => true)
+
+export default TodoItem;

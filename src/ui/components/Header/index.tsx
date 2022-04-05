@@ -1,36 +1,56 @@
 import React from 'react';
 import '@sass/Layout/header.scss';
-import { useUser } from '@/store/context/UserContext';
-import UserService from '@/services/UserService';
+import UserService, { UserStore } from '@/services/UserService';
 import ThemeSwitcherButtons from '../ThemeSwitcherButtons';
+import ThemeService, { ThemeStore } from '@/services/Theme';
 
 
 interface Props {
 }
 
 const Header = (props: Props) => {
-  const [user, setUser] = useUser();
+  const [user, setUser] = UserStore.useContext();
+  const [theme, setTheme] = ThemeStore.useContext();
 
 
   const signIn = async () => {
     await UserService.signIn('username', 'password')
-      .then(r => {
-        setUser({
-          action: "SET_USER",
-          payload: r
-        });
+      .then((r: any) => {
+        // setUser({
+        //   type: "SET_USER",
+        //   payload: r
+        // });
+        // setTheme({
+        //   theme: r.theme
+        // });
+        // ThemeService.setTheme(r.theme)
       })
   }
 
   const signInManager = () => {
     UserService.signIn('manager', 'password')
-      .then(r => {
-        console.log("------")
-        setUser({
-          action: "SET_USER",
-          payload: r
-        });
+      .then((r: any) => {
+        // setUser({
+        //   type: "SET_USER",
+        //   payload: r
+        // });
+        // setTheme({
+        //   theme: r.theme
+        // });
+        // ThemeService.setTheme(r.theme)
       })
+  }
+  const signOut = () => {
+    UserService.signOut().then((r: any) => {
+      // setUser({
+      //   type: "SET_SIGNOUT",
+      //   payload: null
+      // });
+      // setTheme({
+      //   theme: "theme-default"
+      // });
+      // ThemeService.setTheme('theme-default')
+    });
   }
 
   return <div className='header header--wrap _flx'>
@@ -41,11 +61,12 @@ const Header = (props: Props) => {
     </div>
     <div className="header--userarea _fr">
       <div className="auth-area">
-      <button onClick={() => signIn()}>set user</button>
-      <button onClick={() => signInManager()}>set Manager</button>
-      {
-        user.userName ? user.userName : null
-      }
+        <button onClick={() => signIn()}>set user</button>
+        <button onClick={() => signInManager()}>set Manager</button>
+        <button onClick={() => signOut()}>log out</button>
+        {
+          user.userName ? user.userName : null
+        }
       </div>
       <div className="theme-switching">
         {/* <ThemeSwitcherButtons /> */}

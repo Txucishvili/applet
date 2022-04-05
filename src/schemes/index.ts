@@ -15,7 +15,7 @@
 // }
 
 
-const globalComponents = {};
+const globalComponents: any = {};
 
 
 

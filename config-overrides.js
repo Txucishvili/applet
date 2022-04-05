@@ -4,6 +4,8 @@ const {
 } = require('react-app-rewire-alias')
 const addRewireScssLoader = require("react-app-rewire-scss-loaders");
 const path = require("path");
+const webpack = require("webpack");
+const rewireVendorSplitting = require('./plugin');
 
 const aliasMap = configPaths('./tsconfig.base.json') // or jsconfig.paths.json
 
@@ -28,6 +30,34 @@ module.exports = {
     // multipleEntry.addMultiEntry(config);
     alias(aliasMap)(config);
     scssLoader(['./src/sass/_shared.scss'])(config, env);
+    // config = rewireVendorSplitting(config, env);
+    console.log(config)
+
+    // if (!config.optimization) {
+    //   config.optimization = {};
+    // }
+    // config.optimization.splitChunks.chunks = { chunks: 'all', name: false };
+    // config.optimization = {
+    //   // Instruct webpack not to obfuscate the resulting code
+    //   minimize: false,
+    //   splitChunks: {
+    //     minSize: 0,
+    //     chunks: 'all',
+    //     minChunks: 4,
+    //     cacheGroups: {
+    //       // Disabling this cache group.
+    //       default: false,
+    //     },
+    //   },
+    // },
+    // config.plugins.push(
+    //  new webpack.optimize.SplitChunksPlugin({
+    //     name: 'vendor'
+    //   }) 
+    // )
+    // config.optimization.splitChunks.name = false;
+    console.log(config.optimization)
+
     return config;
   },
   devServer: function (configFunction) {
@@ -38,7 +68,7 @@ module.exports = {
     return function (proxy, allowedHost) {
       // Create the default config by calling configFunction with the proxy/allowedHost parameters
       const config = configFunction(proxy, allowedHost);
-      console.log(config)
+      // console.log(config)
       // Return your customised Webpack Development Server config.
       return config;
     };

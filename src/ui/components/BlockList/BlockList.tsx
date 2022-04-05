@@ -1,78 +1,87 @@
-import globalComponents from '@/modules';
-import { useUser } from '@/store/context/UserContext';
-import React, { createElement, createRef, useContext, useEffect, useRef, useState } from 'react';
+import React, { createElement, createRef, forwardRef, memo, useContext, useEffect, useRef, useState } from 'react';
+import globalComponents from '@/schemes';
 import TodoItem from '../TodoItem/TodoItem';
-import { BlockListContext, ListContextEl, useBlockList } from './BlockListContext';
-
-
-const BlockListWrapper: any = (props) => {
-  const { onAction, list } = props;
-  const [todoList, dispatch] = ListContextEl.useContext();
-  const [user, setUser] = useUser();
-  const [state, setState] = useState([])
-
-  useEffect(() => {
-    const _localTodos: any = localStorage.getItem('todos') ?? [];
-    const localTodos: any = [].concat(JSON.parse(_localTodos));
-    dispatch(localTodos);
-    // dispatch(localTodos);
-  }, []);
-
-  useEffect(() => {
-    if(user.type == 'manager') {
-      // dispatch(todoList.list);
-    }
-  }, [user])
-  
-  // const BlockListRender = BlockList({ ...props, ListItem: TodoItem });
-
-  return <div>
-    {todoList.list.length}
-    <BlockList list={todoList.list} />
-  </div>;
-};
+import { BlockListContext } from './BlockListContext';
+import { UserStore } from '@/services/UserService';
 
 const wrapWithProps = (props) => {
   return (c) => {
-    const ComponentReturn = createElement(c, props)
+    const ComponentReturn = () => {
+      return createElement(c, props);
+    }
     return ComponentReturn
   }
 }
 
-const TodoComponent: any = (props) => {
+const BlockListRender: any = (props) => {
+  const [user, setUser] = UserStore.useContext();
+  console.log("user", user)
 
-  const [user, setUser] = useUser();
-  let actionButtons: any = null;
-
-  if (!!user && user.roles) {
-    if (user.type == "manager") {
-      // console.log("HIT", globalComponents['manager'].BlockList.BlockItem.ActionButtons);
-      actionButtons = globalComponents['manager'].BlockList.BlockItem.ActionButtons();
-    } else {
-      actionButtons = globalComponents['user'].BlockList.BlockItem.ActionButtons();
-    }
+  if (!!user && user.type) {
+    console.log(globalComponents[user.type].BlockList.wrapper)
+    const el = wrapWithProps({ ...props, ...globalComponents[user.type].BlockList.BlockItem })((globalComponents[user.type].BlockList.wrapper ? globalComponents[user.type].BlockList.wrapper(BlockList) : BlockList))();
+    return el;
   }
 
-  return wrapWithProps({ actionButtons: actionButtons, ...props })(TodoItem)
+  return wrapWithProps({ ...props })(BlockList)();
+}
+const RenderItem: any = (props, ref) => {
+  // console.log("----------", props, ref)
+  const [user, setUser] = UserStore.useContext();
+
+
+  if (!!user && user.type) {
+    const el = wrapWithProps({ ...props })((globalComponents[user.type].BlockList.BlockItem.Item))();
+    return el;
+  }
+
+  return wrapWithProps({ ...props })(TodoItem)();
 };
 
-
 const BlockList = (props: any) => {
-  const { list } = props;
-  // const [todoList, dispatch] = useContext(BlockListContext);
+  const [todoList, dispatch] = BlockListContext.useContext();
+
+  const ref: any = useRef(RenderItem);
   
-  // console.log("[BlockList]", todoList)
+  useEffect(() => {
+    const _localTodos: any = localStorage.getItem('todos') ?? [];
+    const localTodos: any = [].concat(JSON.parse(_localTodos));
+    dispatch({
+      type: 'set',
+      payload: {
+        list: localTodos.slice(0, 50)
+      }
+    });
+
+    
+  }, []);
+  
+
+  const onClick = (e) => {
+    dispatch({
+      type: e.action,
+      payload: {
+        key: e.value
+      }
+    })
+  }
+  
 
   return <div className='container-fluid'>
+  {/* <p>BlockList</p> */}
+
     <div className="row">
-      {list.map((todo, key) => {
+      {!!todoList.list && todoList.list.length ? todoList.list.map((todo, key) => {
         return <div key={key} className="col-md-4">
-          <TodoComponent item={todo} />
+          <RenderItem item={todo} />
         </div>
-      })}
+      }) : null}
     </div>
   </div>;
 
 };
 
-export default BlockListWrapper;
+
+const MemoBlockList = React.memo(BlockListRender, () => true);
+
+export default MemoBlockList;

@@ -1,11 +1,11 @@
-import { useTheme } from '@/store';
+import { ThemeStore } from '@/services/Theme';
 import React, { Fragment } from 'react';
 
 interface Props {
 }
 
 const ThemeSwitcherButtons = (props: Props) => {
-  const [theme, dispatch] = useTheme();
+  const [theme, dispatch] = ThemeStore.useContext();
 
   function _setTheme(e) {
     dispatch({

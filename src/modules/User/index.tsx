@@ -1,7 +1,7 @@
-import { UserActionButtons } from "@/ui/components/BlockList/BlockList.user";
 import ContentViewComponent from "./components/ContentView";
 import SomeComponent from "./components/SomeComponent";
 import UserComponent from "./components/UserComponent";
+import withUserRule, { UserActionButtons } from "@/ui/components/BlockList/BlockList.user";
 
 const withUser = (Component) => {
   return () => {
@@ -22,8 +22,10 @@ const Components = {
     component: withUser(SomeComponent)
   },
   BlockList: {
+    wrapper: withUserRule,
     BlockItem: {
-      ActionButtons: UserActionButtons
+        name: "manager",
+        actionButtons: UserActionButtons,
     }
   }
 }

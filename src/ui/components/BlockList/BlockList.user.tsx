@@ -1,79 +1,84 @@
-import { useUser } from '@/store/context/UserContext';
-import React, { createRef, useRef } from 'react';
-import TodoItem from '../TodoItem/TodoItem';
+import React, { createElement, createFactory, useEffect, useRef } from 'react';
+import { BlockListContext } from './BlockListContext';
 
-interface Props {
-  list: any[]
+const withMangerRule = (props: any) => {
+  return (c) => {
+    BlockListContext._reducer = (state, { type, payload }) => {
+      switch (type) {
+        case 'set':
+          return { ...state, list: payload.list };
+          break;
+        case 'delete':
+          return { ...state, list: state.list.filter((todo, i) => i !== payload.key) }
+          break;
+        default:
+          return { ...state }
+          break;
+      }
+    }
+
+    return c;
+  }
 }
 
-const withRules = (c) => {
-  return c;
-}
-
-const ActionButtons = (props) => {
-  console.log('[ActionButtons]', props);
-  const { rules } = props;
+export function TodoItem(props: any) {
+  const { item, actionButtons }: any = props ?? {};
+  const ActionButtons = actionButtons;
+  const actionsArea = useRef(null);
 
   return (
-    <div>
-      {rules.includes("edit") ? <button onClick={() => props.onAction({action: 'edit', value: null})} >edit</button> : false}
+    <div className='todo-item todo-item--wrap'>
+      <div className="todo-item--content">
+        <h1 style={{
+          fontSize: 24,
+          fontWeight: 600
+        }}>
+          {item.id}
+        </h1>
+        <div style={{ marginTop: 4 }}>
+          {item.title}
+        </div>
+      </div>
+      <div ref={actionsArea} className="todo-item--actions">
+        <UserActionButtons />
+      </div>
+
     </div>
   )
 }
 
-const TodoWithRule: any = (props) => {
-  const { onActions, item } = props;
-  const [user, setUser] = useUser();
+export const UserBlockList: any = (props) => {
+  useEffect(() => {
+    console.log("[ManagerBlockList]", props);
 
-  const onAction = (action) => {
-    console.log('[onAction]', action);
-  }
+    return () => {
+    }
+  }, []);
 
 
-  const todoProps: any = { item, actionButtons: null };
-  const TodoRender = TodoItem;
-
-  if (!!user.roles && user.roles.includes("manager")) {
-    // console.log("object", TodoRender({item}))
-    todoProps.actionButtons = ActionButtons({ onAction: (e) => onActions({...e, value: item.id}), rules: ['edit', 'delete', 'move'] });
-  } else if (!!user.roles && user.roles.includes("user")) {
-    todoProps.actionButtons = ActionButtons({ onAction, rules: ['edit'] });
-  }
-
-  console.log("todoProps", todoProps)
-
-  return withRules(TodoRender(todoProps));
+  return <div>
+    <p>User Title</p>
+    {/* {memorized} */}
+  </div>
 }
-
-
-const BlockList = (props: any) => {
-  const { list } = props;
-
-  const onActions = (e) => {
-    // const key = list.indexOf(list.find(i => i.id == e.value));
-    // list.splice(key, 0);
-    // props.onAction(key);
-    console.log('OnTodoListAction', e, list);
-  }
-
-  return <div className='container-fluid'>
-    <div className="row">
-      {list.map((todo, key) => {
-        return <div key={key} className="col-md-4">
-          <TodoWithRule onActions={(e) => onActions(e)} item={todo} />
-        </div>
-      })}
-    </div>
-  </div>;
-};
-
 
 export const UserActionButtons = (props) => {
+  const onClickOut = (e) => {
+    // dispatch([1,2,3])
+    console.log(props)
+    props.actions.onEdit();
+  }
+
   return (
     <div>
-       <button onClick={() => props.onAction({action: 'edit', value: null})} >edit</button> 
+      <button onClick={() => onClickOut({ action: 'edit', value: null })} >edit</button>
     </div>
   )
 }
 
-export default {};
+const ruleConfig = {
+  name: "manager",
+  actionButtons: UserActionButtons,
+}
+
+export default withMangerRule(ruleConfig);

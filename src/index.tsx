@@ -1,21 +1,20 @@
 // 
 // booting app
 // 
+import { bootConfig } from "./boot/boot";
 
-import {bootConfig} from "./boot/boot";
+const _bootstrapApp = async () => {
+  const appConfig: any = await bootConfig();
 
-const initApp = () => {
-  import(
-      /* webpackChunkName: "app" */
-      `./AppInit`
-  )
-}
+  await import('./boot/app-boot').then((m) => {
+    m.default(appConfig);
+  })
+ 
+  console.log("[Setting app config]");
 
-const init = () => {
-  bootConfig();
-  initApp();
 };
 
-init();
+_bootstrapApp();
 
-export {init};
+
+export { _bootstrapApp };

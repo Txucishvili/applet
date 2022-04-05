@@ -1,11 +1,8 @@
 import React, { Fragment, memo, useEffect, useMemo } from 'react';
-import { setTheme } from '@/store/context/ThemeContext';
-import { ThemeContext, useTheme } from '../../../store';
-import { useUser } from '@/store/context/UserContext';
-import UserServices from '@/services/UserService';
+import UserServices, { UserStore } from '@/services/UserService';
 import UserService from '@/services/UserService';
-import globalComponents from '@/modules';
 import Header from '@/ui/components/Header';
+import globalComponents from '@/schemes';
 
 interface Props {
 }
@@ -13,10 +10,10 @@ interface Props {
 
 const RenderComponent = (props) => {
   let { target, component, type } = props;
-  const [user, setUser] = useUser();
+  const [user, setUser]: any = UserStore.useContext();
 
   if (user.roles && type == 'switcher') {
-    target = user.roles[user.roles.length - 1]
+    target = user.roles !== null ? user.roles[user.roles.length - 1] : []
   }
 
 

@@ -1,48 +1,81 @@
-import { useUser } from '@/store/context/UserContext';
-import React, { createRef, useContext, useRef } from 'react';
-import BlockList from './BlockList.user';
-import { BlockListContext, ListContextEl } from './BlockListContext';
+import React, { createElement, createFactory, memo, useEffect, useMemo, useRef } from 'react';
+import { BlockListContext } from './BlockListContext';
 
-export enum Events {
-  SET_TITLE = 'set_title'
-  // use an enum to keep track of events similar to action types set as variables in redux
-};
-
-export const eventEmitter = {
-  _events: {},
-  dispatch(event, data) {
-    if (!this._events[event]) return;
-    this._events[event].forEach(callback => callback(data))
-  },
-  subscribe(event, callback: (data) => any) {
-    if (!this._events[event]) this._events[event] = [];
-    this._events[event].push(callback);
-  },
-  unsubscribe(event) {
-    if (!this._events[event]) return;
-    delete this._events[event];
+const wrapWithProps = (props) => {
+  return (c) => {
+    const ComponentReturn = () => {
+      useEffect(() => {
+        console.log("init")
+      }, [])
+      return createElement(c, props);
+    }
+    return ComponentReturn
   }
-};
+}
 
+const withMangerRule = (props: any) => {
+  return (c) => {
+    BlockListContext._reducer = (state, { type, payload }) => {
+      switch (type) {
+        case 'set':
+          return { ...state, list: payload.list };
+          break;
+        case 'delete':
+          return { ...state, list: state.list.filter((todo, i) => i !== payload.key) }
+          break;
+        default:
+          return { ...state }
+          break;
+      }
+    }
 
-eventEmitter.subscribe('onAction', (e) => {
-  console.log("subscribe form", e)
-})
-
+    return wrapWithProps(props)(c);
+  }
+}
 
 export const ManagerActionButtons = (props) => {
-  const onClickOut = (props) => {
+  const onClickOut = (e) => {
     // dispatch([1,2,3])
-    eventEmitter.dispatch('onAction', {someData: true});
+    props.actions(e);
   }
 
   return (
     <div>
-      <button onClick={() => onClickOut({ action: 'edit', value: null })} >edit</button>
-      <button onClick={() => onClickOut({ action: 'delete', value: null })} >delete</button>
+      <button onClick={() => onClickOut({ action: 'edit', value: props.el })} >edit</button>
+      <button onClick={() => onClickOut({ action: 'delete', value: props.el })} >delete</button>
       <button>move</button>
     </div>
   )
 }
 
-export default {};
+export function TodoItem(props: any) {
+  const { item, actionButtons }: any = props ?? {};
+  const ActionButtons = actionButtons;
+  const actionsArea = useRef(null);
+
+  return (
+    <div className='todo-item todo-item--wrap'>
+      <div className="todo-item--content">
+        <h1 style={{
+          fontSize: 24,
+          fontWeight: 600
+        }}>
+        {item.id}
+        </h1> 
+        <div style={{marginTop: 4}}>
+        {item.title}
+        </div>
+      </div>
+        <div ref={actionsArea} className="todo-item--actions">
+          <ManagerActionButtons />
+        </div>
+    </div>
+  )
+}
+
+const ruleConfig = {
+  name: "manager",
+  actionButtons: ManagerActionButtons,
+}
+
+export default withMangerRule(ruleConfig);

@@ -1,24 +1,24 @@
-import React, { forwardRef, useEffect, useRef } from 'react';
-import logo from './logo.svg';
+import { useEffect } from 'react';
+// import '@sass/_theme.scss';
 import './App.scss';
 import '@sass/_base.scss';
-import { useTheme } from './store';
+// import { useTheme } from './store';
 import ThemeService from './services/Theme';
-import { Route, Router, Routes, useRoutes } from 'react-router-dom';
-import ReactRoutes from '@/routes';
-
-
+import { useRoutes } from 'react-router-dom';
+import ReactRoutes from "@/routes/index";
+import { UserStore } from './services/UserService';
 
 function App() {
-  const ref = useRef(null);
-  const [theme,] = useTheme();
+  // const [theme,] = useTheme();
 
+  // useEffect(() => {
+  //   ThemeService.setTheme(theme.theme);
+  // }, [theme])
   useEffect(() => {
-    ThemeService.setTheme(theme.theme);
-  }, [theme])
+    console.log("[AppLoaded DONE]")
+  }, [])
 
   let element = useRoutes(ReactRoutes);
-
 
   return (
     <div className="App">
@@ -43,13 +43,22 @@ function App() {
 
         })}
       </Routes> */}
-        {element}
+      {element}
       {/* <Layout>
         <SideNav isOpen={true}>
           sidenav
         </SideNav>
         <Content />
       </Layout> */}
+      {/* <Routes>
+        <Route path={'/'} element={<Layout />}>
+          <Route path="/" element={<MainPage />} />
+          <Route path="/category" element={<CategoriesView />} />
+          <Route path="/list" element={<ListsView />} />
+          <Route path="/bookmark" element={<BookmarkViews />} />
+          <Route path="/setting" element={<SettingView />} />
+        </Route>
+      </Routes> */}
     </div>
   );
 }

@@ -1,46 +1,50 @@
-import {
-    createContext
-} from 'react';
+// import ModulesService from '@/services/ModulesService';
 // before app boot config
-import '@sass/_theme.scss';
+// import ModulesService from '@/services/ModulesService';
+// import '@sass/_theme.scss';
 
-const setTheme = async function (name) {
-    const documentEl = document.documentElement;
-    documentEl.classList.add(name);
 
-    import(
-        /* webpackChunkName: "theme-root" */
-        `@sass/themes/_${name}.scss`
-    )
+const checkUser = (token) => {
+  const url = token !== 'manager' ? '/api/Authentication.json' : '/api/AuthenticationManager.json';
+  const user = fetch(url).then(r => r.json());
+  return user;
 }
 
-export const BootContext = createContext({});
-
-const checkUser = () => {
-    const user = fetch('/api/Authentication.json').then(r => r.json());
-    console.log("user", user)
-    return user;
+if (!localStorage.getItem("local_theme")) {
+  window.localStorage.setItem("local_theme", 'theme-light');
 }
+
+const appBootConfig = {};
 
 const bootConfig = async () => {
-    const appBootConfig = {};
 
-    const theme = localStorage.getItem("theme") ?? "theme-default";
-    const userToken = localStorage.getItem("user-token") ?? null;
+  const localTheme = localStorage.getItem("local_theme");
+  const userToken = localStorage.getItem("user_token") ?? null;
+  const user: any = {};
+  let theme = localTheme;
 
-    // const user = await checkUser();
-    // console.log("----", user)
+  if (!!userToken) {
+    const _user = await checkUser(userToken);
 
-    Object.assign(appBootConfig, {
-        theme,
-        userToken: userToken,
-    });
+    if (!!_user) {
+      Object.assign(user, _user);
+      theme = user.theme;
+    }
+  }
 
-    setTheme(theme);
-    console.log('[App booting]', appBootConfig);
+  Object.assign(appBootConfig, {
+    theme: {
+      theme
+    },
+    userToken: userToken,
+    user
+  });
+  console.log('[App booting]', appBootConfig);
+
+  return appBootConfig;
 }
 
 
 export {
-    bootConfig
+  bootConfig
 };
