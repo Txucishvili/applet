@@ -51,7 +51,7 @@ class ThemeServices implements ThemeServiceInterface {
     ).then((m) => {
       this.themeName = e;
       this.attachTheme(e);
-      console.log("SETTING UP THEME");
+      // !!!!
       ThemeStore.dispatcher({
         type: "SET_THEME",
         payload: {

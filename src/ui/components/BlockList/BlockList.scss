@@ -1,0 +1,17 @@
+.blocklist-header {
+  &--wrap {
+    display: flex;
+    align-items: center;
+    padding: 10px 0 30px 0;
+  }
+
+  &--title {
+    font-size: 24px;
+    font-weight: 600;
+    @include Font-DelaGhoticOne(24, 600);
+  }
+
+  &--actions {
+    margin-left: auto;
+  }
+}

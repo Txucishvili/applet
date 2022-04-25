@@ -1,0 +1,59 @@
+@import '../functions';
+
+$green-pea: (
+  50: #f2fbf2,
+  100: #e2f6e3,
+  200: #c6ecc8,
+  300: #99dc9e,
+  400: #65c36c,
+  500: #40a749,
+  600: #308938,
+  700: #286a2e,
+  800: #25562a,
+  900: #204724,
+);
+$yellow: (
+  50: #fcfee8,
+  100: #f8ffc2,
+  200: #f4ff87,
+  300: #f5ff43,
+  400: #ffff04,
+  500: #efe503,
+  600: #ceb500,
+  700: #a48304,
+  800: #88660b,
+  900: #735310,
+);
+
+$gray: (
+  50: #f8f8f8,
+  100: #f0f0f0,
+  200: #e4e4e4,
+  300: #d1d1d1,
+  400: #b4b4b4,
+  500: #9a9a9a,
+  600: #818181,
+  700: #6a6a6a,
+  800: #5a5a5a,
+  900: #4e4e4e,
+);
+
+$tall-poppy: (
+  50: #fdf3f3,
+  100: #fde3e3,
+  200: #fbcdcd,
+  300: #f8a9a9,
+  400: #f17878,
+  500: #e74c4c,
+  600: #d32f2f,
+  700: #c22727,
+  800: #932121,
+  900: #7a2222,
+);
+
+$shared-pallate: collectMaps(
+  changeKeys($green-pea, 'green-'), 
+  changeKeys($tall-poppy,  'red-'),
+  changeKeys($yellow,  'yellow-'),
+  changeKeys($gray, 'gray-')
+  );

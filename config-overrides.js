@@ -6,8 +6,10 @@ const addRewireScssLoader = require("react-app-rewire-scss-loaders");
 const path = require("path");
 const webpack = require("webpack");
 const rewireVendorSplitting = require('./plugin');
-
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const aliasMap = configPaths('./tsconfig.base.json') // or jsconfig.paths.json
+const TerserPlugin = require('terser-webpack-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
 const scssLoader = (items) => {
   const _items = items.map((e) => path.resolve(__dirname, e));
@@ -28,35 +30,66 @@ const scssLoader = (items) => {
 module.exports = {
   webpack: function override(config, env) {
     // multipleEntry.addMultiEntry(config);
+
+    const isDev = config.mode == 'development';
+
     alias(aliasMap)(config);
     scssLoader(['./src/sass/_shared.scss'])(config, env);
     // config = rewireVendorSplitting(config, env);
     console.log(config)
 
-    // if (!config.optimization) {
-    //   config.optimization = {};
-    // }
-    // config.optimization.splitChunks.chunks = { chunks: 'all', name: false };
     // config.optimization = {
-    //   // Instruct webpack not to obfuscate the resulting code
-    //   minimize: false,
-    //   splitChunks: {
-    //     minSize: 0,
-    //     chunks: 'all',
-    //     minChunks: 4,
-    //     cacheGroups: {
-    //       // Disabling this cache group.
-    //       default: false,
-    //     },
+
+    // };
+
+    // config.optimization.splitChunks = {
+    //   cacheGroups: {
+    // default: false,
+    // vendor: {
+    //   test: /[\\/]node_modules[\\/](react|react-dom|css-loader|react-router-dom)[\\/]/,
+    //   name: 'vendor',
+    //   chunks: 'all',
+    // },
+    // commons: {
+    //   test: /[\\/]node_modules[\\/]/,
+    //   // cacheGroupKey here is `commons` as the key of the cacheGroup
+    //   name(module, chunks, cacheGroupKey) {
+    //     const moduleFileName = module
+    //       .identifier()
+    //       .split('/')
+    //       .reduceRight((item) => item);
+    //     const allChunksNames = chunks.map((item) => item.name).join('~');
+    //     return `${cacheGroupKey}-${allChunksNames}-${moduleFileName}`;
+    //   },
+    //   chunks: 'all',
+    // },
+    // byModuleTypeGroup: {
+    //   test(module) {
+    //     return module.type === 'javascript/auto';
+    //   },
+    //   name(module, chunks, cacheGroupKey) {
+    //     const moduleFileName = module
+    //       .identifier()
+    //       .split('/')
+    //       .reduceRight((item) => item);
+    //       console.log("---", cacheGroupKey)
+    //       console.log("moduleFileName", moduleFileName)
+    //       // console.log("---", chunks)
+    //     const allChunksNames = chunks.map((item) => item.name).join('~');
+    //     return '[name]';
     //   },
     // },
-    // config.plugins.push(
-    //  new webpack.optimize.SplitChunksPlugin({
-    //     name: 'vendor'
-    //   }) 
-    // )
-    // config.optimization.splitChunks.name = false;
-    console.log(config.optimization)
+    //   }
+    // }
+
+    if (process.argv.includes('--bundle-report')) {
+      config.plugins.push(
+        new BundleAnalyzerPlugin()
+      )
+    }
+    config.plugins.push(
+      // new webpack.optimize.ModuleConcatenationPlugin()
+    )
 
     return config;
   },

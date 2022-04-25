@@ -1,23 +1,44 @@
-@import '~sassync';
+@import '~sassync/sass/_default/settings/_mixins/_flexbox';
+$browser-context: 16;
 
+@function em($pixel, $context: $browser-context) {
+	@return calc($pixel / $context) + em;
+}
 
-@mixin _setThemeVars($theme) {
-	@each $el in map-keys($theme) {
-		---#{$el}: #{map-get($theme, $el)};
-		@content;
-	}
+@function collectMaps($maps...) {
+  $collection: ();
+
+  @each $map in $maps {
+    $collection: map-merge($collection, $map);
+  }
+
+  @return $collection;
+}
+
+@mixin _setThemeVars($maps...) {
+
+  $collection: ();
+
+  @each $map in $maps {
+    $collection: map-merge($collection, $map);
+  }
+
+  @each $el in map-keys($collection) {
+    ---#{$el}: #{map-get($collection, $el)};
+    @content;
+  }
 }
 
 @mixin setTheme($name, $theme) {
-	$prefix: $name;
+  $prefix: $name;
 
-	@if($name==root) {
-		$prefix: ':root';
-	}
+  @if($name == root) {
+    $prefix: ':root';
+  }
 
-	#{$prefix} {
-		@include _setThemeVars($theme);
-	}
+  #{$prefix} {
+    @include _setThemeVars($theme);
+  }
 }
 
 $font-AlfaSlabOne: 'Alfa Slab One',
@@ -29,30 +50,38 @@ cursive;
 $font-IBMPlexMono: 'IBM Plex Mono',
 monospace;
 
-@mixin Font-style($family: 'Tahome', $size: 12, $weight: 600, $line-height: 1.2, $spacing: 1px) {
+$font-OpenSans: 'Open Sans',
+monospace;
+
+@mixin _font-style($family: 'Tahome', $size: 12, $weight: 500, $line-height: 1.2, $spacing: 1px) {
   font-family: $family;
-  font-size: em($size);
+  font-size: calc(em($size));
   line-height: $line-height;
   letter-spacing: $spacing;
   font-weight: $weight;
   @content;
 }
 
-@mixin Font-AlfaSlabOne($size: 12, $weight: 600, $line-height: 1.2, $spacing: 1px) {
-  @include Font-style( $font-AlfaSlabOne, $size, $weight, $line-height, $spacing);
+@mixin Font-AlfaSlabOne($size: 12, $weight: 500, $line-height: 1.2, $spacing: 1px) {
+  @include _font-style($font-AlfaSlabOne, $size, $weight, $line-height, $spacing);
   @content;
 }
 
 
-@mixin Font-DelaGhoticOne($size: 12, $weight: 600, $line-height: 1.2, $spacing: 1px) {
-  @include Font-style( $font-DelaGhoticOne, $size, $weight, $line-height, $spacing);
+@mixin Font-DelaGhoticOne($size: 12, $weight: 500, $line-height: 1.2, $spacing: 1px) {
+  @include _font-style($font-DelaGhoticOne, $size, $weight, $line-height, $spacing);
 
   @content;
 }
 
 
 
-@mixin Font-IBMPlexMono($size: 12, $weight: 600, $line-height: 1.2, $spacing: 1px) {
-  @include Font-style($font-IBMPlexMono, $size, $weight, $line-height, $spacing);
+@mixin Font-IBMPlexMono($size: 12, $weight: 500, $line-height: 1.2, $spacing: 1px) {
+  @include _font-style($font-IBMPlexMono, $size, $weight, $line-height, $spacing);
+  @content;
+}
+
+@mixin Font-OpenSans($size: 12, $weight: 500, $line-height: 1.2, $spacing: 1px) {
+  @include _font-style($font-OpenSans, $size, $weight, $line-height, $spacing);
   @content;
 }

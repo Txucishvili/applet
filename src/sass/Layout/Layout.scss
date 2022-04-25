@@ -15,14 +15,14 @@ $navbar-spacing: 5px;
 
 	&--content {
 		width: 100%;
-		padding-left: $sidenav-size;
+		padding-left: calc($sidenav-size - 10px);
+		padding-right: calc($sidenav-spacing - 10px);
 		padding-top: $sidenav-spacing;
 		padding-bottom: $sidenav-spacing;
-		padding-right: $sidenav-spacing;
 	}
 
   &--body {
-    padding: $sidenav-spacing 0;
+    padding: calc($sidenav-spacing + 10px) 0;
   }
 }
 
@@ -96,6 +96,30 @@ $navbar-spacing: 5px;
       }
     }
 	}
+
+  &--switcher {
+    width: 100%;
+    height: 70px;
+    display: flex;
+    &--item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: inherit;
+      cursor: pointer;
+      svg {
+        width: 24px;
+        fill: rgba(#FFF, .5);
+      }
+
+      &:hover {
+        svg {
+          width: 24px;
+          fill: rgba(#FFF, 1);
+        }
+      }
+    }
+  }
 }
 
 .logo {
@@ -112,6 +136,7 @@ $navbar-spacing: 5px;
 	}
 }
 
-.spacer {
-	height: 1200px;
+.container-outer {
+  margin-left: -0.75rem;
+  margin-right: -0.75rem;
 }

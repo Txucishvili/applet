@@ -1,12 +1,26 @@
 .header {
   &--wrap {
-    padding: 20px;
+    padding: 10px 20px;
     background-color: var(---header-bg-color);
     border-radius: 12px;
+    height: 60px;
+    @include flex;
+    align-items: center;
   }
 
   &--title {
-    @include Font-IBMPlexMono($size: 26, $weight: 800, $spacing: 1.2px);
+    @include Font-IBMPlexMono($size: 24, $weight: 800, $spacing: 1.2px);
+    text-transform: lowercase;
+    // font-variant: small-caps;
   }
 
+}
+
+.auth-modal {
+  &--wrap {
+    width: 540px;
+    padding: 20px;
+    color: #fff;
+    background-color: var(---side-nav-bg-color);
+  }
 }

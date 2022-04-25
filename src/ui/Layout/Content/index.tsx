@@ -1,7 +1,7 @@
 import React, { Fragment, memo, useEffect, useMemo } from 'react';
 import UserServices, { UserStore } from '@/services/UserService';
 import UserService from '@/services/UserService';
-import Header from '@/ui/components/Header';
+import Header from '@/ui/Layout/Header';
 import globalComponents from '@/schemes';
 
 interface Props {
@@ -48,12 +48,13 @@ const MemoRender = React.memo((props: any) => RenderComponent(props));
 
 const Content = (props: any) => {
   
-
   return <Fragment>
     <div className="layout--content">
       <Header />
       <div className="layout--body">
+        <div className="container-fluid">
         {props.children}
+        </div>
       </div>
 
     </div>

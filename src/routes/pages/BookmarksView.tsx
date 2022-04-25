@@ -1,5 +1,5 @@
 import React from 'react'
-import BookMarkComponent from '../components/BookMarks/BookMarkComponent'
+import BookMarkComponent from '../../ui/components/BookMarks/BookMarkComponent'
 
 export default function BookmarkViews() {
   return (

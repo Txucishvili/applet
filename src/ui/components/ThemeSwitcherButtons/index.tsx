@@ -1,4 +1,4 @@
-import { ThemeStore } from '@/services/Theme';
+import { ThemeStore } from '@/services/ThemeService';
 import React, { Fragment } from 'react';
 
 interface Props {

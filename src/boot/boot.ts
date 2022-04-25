@@ -3,41 +3,48 @@
 // import ModulesService from '@/services/ModulesService';
 // import '@sass/_theme.scss';
 
+import { UsersLocalDataAPI } from "@/API/UsersAPI";
 
-const checkUser = (token) => {
+
+export const checkUser = async (token) => {
   const url = token !== 'manager' ? '/api/Authentication.json' : '/api/AuthenticationManager.json';
   const user = fetch(url).then(r => r.json());
-  return user;
+
+  const Localuser = UsersLocalDataAPI.getUserInfo(token);
+  // console.log("Localuser", Localuser)
+  
+  return Localuser;
 }
 
+const APP_DEFAULT_THEME = 'theme-simple';
+
 if (!localStorage.getItem("local_theme")) {
-  window.localStorage.setItem("local_theme", 'theme-light');
+  window.localStorage.setItem("local_theme", APP_DEFAULT_THEME);
+} else if (localStorage.getItem("local_theme") !== APP_DEFAULT_THEME) {
+  window.localStorage.setItem("local_theme", APP_DEFAULT_THEME);
 }
 
 const appBootConfig = {};
 
-const bootConfig = async () => {
-
+const bootConfig =  () => {
   const localTheme = localStorage.getItem("local_theme");
   const userToken = localStorage.getItem("user_token") ?? null;
-  const user: any = {};
   let theme = localTheme;
 
-  if (!!userToken) {
-    const _user = await checkUser(userToken);
+  // if (!!userToken) {
+  //   const _user = checkUser(userToken);
 
-    if (!!_user) {
-      Object.assign(user, _user);
-      theme = user.theme;
-    }
-  }
+  //   if (!!_user) {
+  //     Object.assign(user, _user);
+  //     theme = user.theme;
+  //   }
+  // }
 
   Object.assign(appBootConfig, {
     theme: {
       theme
     },
-    userToken: userToken,
-    user
+    userToken: userToken
   });
   console.log('[App booting]', appBootConfig);
 

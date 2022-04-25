@@ -3,6 +3,47 @@
 // light theme
 $custom-theme-primary: #123533;
 
+//
+$firefly: (
+  50: #f1fcf9,
+  100: #d0f7ee,
+  200: #a2ede0,
+  300: #6bddcc,
+  400: #3dc4b4,
+  500: #24a89b,
+  600: #1a877e,
+  700: #196c67,
+  800: #185754,
+  900: #123533,
+);
+$mantis: (
+  '50': '#f6faf3',
+  '100': '#e9f5e3',
+  '200': '#d3eac8',
+  '300': '#afd89d',
+  '400': '#82bd69',
+  '500': '#61a146',
+  '600': '#4c8435',
+  '700': '#3d692c',
+  '800': '#345427',
+  '900': '#2b4522',
+);
+
+// $named: (
+//   50: #EAFDED,
+//   100: #DCFBE7,
+//   200: #BBF8D6,
+//   300: #94ECC4,
+//   400: #75D9B5,
+//   500: #4AC1A2,
+//   600: #36A593,
+//   700: #258A84,
+//   800: #176D6F,
+//   900: #0E525C,
+// );
+
+$pallate: changeKeys($firefly, 'pallate-');
+
 $custom-theme: (
 	background-color: darken($custom-theme-primary, 9%),
 	side-nav-bg-color: darken($custom-theme-primary, 0%),
@@ -12,6 +53,23 @@ $custom-theme: (
   header-bg-color: darken($custom-theme-primary, 5%)
 );
 
+$button-theme: (
+  button-base-color: darken($custom-theme-primary, 0%),
+
+  
+  button-primary: darken($custom-theme-primary, 0%),
+  button-secondary: lighten($custom-theme-primary, 17%),
+
+  button-light: darken(#d9d9d9, 0%),
+  button-dark: darken(#000, 0%),
+
+  button-outline: darken($custom-theme-primary, 0%),
+  button-success: #43752c,
+  button-warning: #977f1f,
+  button-danger: #752c2c,
+  button-info: #9d9d9d,
+);
+
 .theme-custom {
-	@include _setThemeVars($custom-theme)
+	@include _setThemeVars($pallate, $custom-theme, $button-theme)
 }

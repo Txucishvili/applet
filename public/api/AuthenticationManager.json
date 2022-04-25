@@ -4,5 +4,6 @@
     "email": "manager@email.com",
     "roles": ["user", "manager"],
     "type": "manager",
-    "theme": "theme-default"
+    "theme": "theme-default",
+    "widgets": ["Widget1", "Widget2"]
 }

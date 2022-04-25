@@ -1,14 +1,18 @@
 @import '~sassync/sass/_default/_theme/reset';
 
 @import '~sassync';
+@import url('https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Dela+Gothic+One&family=IBM+Plex+Mono:wght@400;600;700&family=Open+Sans:wght@300;500;600;700&display=swap');
 
 body {
   background-color: #FFF;
   color: #FFF;
+  @include Font-OpenSans(14);
   // transition: background-color .15s ease-in-out;
 }
 
 .App {
   min-height: 100vh; // !!!
   background-color: var(---background-color);
+
 }
+

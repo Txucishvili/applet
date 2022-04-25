@@ -1,14 +1,18 @@
-
 @import 'functions';
+@import './themes/shared';
 
 $default-root-theme: darken(gray, 25%);
 
-$default-themes: (background-color: darken($default-root-theme, 9%),
-    side-nav-bg-color: darken($default-root-theme, 0%),
-    side-nav-item-color: darken($default-root-theme, 5%),
-    side-nav-item-h-color: darken($default-root-theme, 9%),
+$button-theme: (
+  button-base-color: orange,
+);
+$default-themes: (
+  background-color: darken($default-root-theme, 9%),
+  side-nav-bg-color: darken($default-root-theme, 0%),
+  side-nav-item-color: darken($default-root-theme, 5%),
+  side-nav-item-h-color: darken($default-root-theme, 9%),
 );
 
 :root {
-    @include _setThemeVars($default-themes)
+	@include _setThemeVars($shared-pallate, $default-themes, $button-theme)
 }

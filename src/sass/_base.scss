@@ -1,13 +1,13 @@
 // @import "theme";
 @import "variables";
 
-@import url('https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Dela+Gothic+One&family=IBM+Plex+Mono:wght@400;600;700&display=swap');
 @import '~bootstrap/scss/bootstrap-grid.scss';
 
 @import 'mixins';
 
 *, div {
     box-sizing: border-box;
+    // outline: none;
 
     &::after, &::before {
         box-sizing: content-box;
@@ -21,4 +21,46 @@
 
 ._fr {
   margin-left: auto;
+}
+
+
+$spacers: 2,
+4,
+6,
+8,
+10,
+12,
+14,
+16,
+18,
+20;
+$directions: 'h',
+'v';
+
+@each $dir in $directions {
+  .divide-list, .divide {
+    &-#{$dir} {
+      @each $spacer in $spacers {
+        &-#{$spacer} {
+          >* {
+            $direction: null;
+  
+            @if $dir=='h' {
+              $direction: left;
+            }
+  
+            @else {
+              $direction: top;
+            }
+  
+            margin-#{$direction}: $spacer+px;
+  
+            &:first-child {
+              margin-#{$direction}: 0px;
+            }
+          }
+        }
+      }
+    }
+  }
 }

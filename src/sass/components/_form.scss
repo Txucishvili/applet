@@ -1,0 +1,50 @@
+.form {
+  &--wrap {}
+
+  &--body {
+    @include flex;
+    flex-direction: column;
+  }
+
+
+  &--field {
+    @include flex;
+
+    &--wrap {
+      padding: 12px 0;
+    }
+
+    &-input {
+      
+    }
+
+    &--type {
+      &-text {
+        flex-direction: column;
+        // background-color: ;
+        .form--field-label {
+          margin-bottom: 9px;
+          padding: 0 12px;
+        }
+      }
+
+      &-radio,
+      &-checkbox {
+        .form--field-label {
+          order: 2;
+        }
+
+        .form--field-input {
+          order: 1;
+          margin-right: 9px;
+        }
+      }
+    }
+
+    &--errors {
+      padding: 4px 8px;
+      @include Font-OpenSans(12, 500)
+    }
+  }
+
+}

@@ -3,6 +3,7 @@ import '@sass/Layout/Layout.scss';
 import SideNav from './SideNav';
 import Content from './Content';
 import { Outlet } from 'react-router-dom';
+import { NavigationStore } from '@/store/NavigationService';
 
 
 interface Props {
@@ -15,9 +16,11 @@ const Layout = (props: any) => {
   return (
 
     <div>
-      <SideNav isOpen={true}>
-        sidenav
-      </SideNav>
+      <NavigationStore.Provider>
+        <SideNav isOpen={true}>
+          sidenav
+        </SideNav>
+      </NavigationStore.Provider>
       <Content>
         <Outlet />
       </Content>

@@ -2,7 +2,7 @@ import SomeComponent from "../User/components/SomeComponent";
 import UserComponent from "../User/components/UserComponent";
 import ContentViewComponent from "./components/ContentView";
 import ManagerComponent from "./components/ManagerComponent";
-import withMangerRule, { ManagerActionButtons } from "@/ui/components/BlockList/BlockList.manager";
+import { ManagerActionButtons } from "@/ui/components/BlockList/BlockList.manager";
 import ReactRoutes from "@/routes/index";
 import { useRoutes } from "react-router-dom";
 
@@ -31,7 +31,7 @@ const Components = {
     component: withAdminRules(SomeComponent)
   },
   BlockList: {
-    wrapper: withMangerRule,
+    // wrapper: withMangerRule,
     BlockItem: {
         name: "manager",
         actionButtons: ManagerActionButtons,

@@ -15,8 +15,7 @@
 // }
 
 
-const globalComponents: any = {};
 
 
 
-export default globalComponents;
+export default {};

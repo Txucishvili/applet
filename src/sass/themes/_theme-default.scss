@@ -2,19 +2,54 @@
 
 // default theme
 
-$color-space-cadet:#1B1F3A;
-$color-dark-bryzantium:#53354A;
-$color-medium-carmine:#A64942;
-$color-coral:#FF7844;
+// $color-space-cadet:#1B1F3A;
+// $color-dark-bryzantium:#53354A;
+// $color-medium-carmine:#A64942;
+// $color-coral:#FF7844;
 
-$default-theme: (background-color: darken($color-space-cadet, 9%),
-	side-nav-bg-color: darken($color-space-cadet, 0%),
-	side-nav-item-color: darken($color-space-cadet, 5%),
-	side-nav-item-h-color: darken($color-space-cadet, 3%),
-	side-nav-item-active-color: darken($color-space-cadet, 9%),
-  header-bg-color: darken($color-space-cadet, 5%)
+
+// set 
+$mirage: (
+  50: #f0f5fd,
+  100: #e4edfb,
+  200: #cdddf8,
+  300: #afc6f2,
+  400: #8fa6ea,
+  500: #7388e1,
+  600: #5865d3,
+  700: #4953b9,
+  800: #3d4696,
+  900: #1b1f3a,
+);
+
+$pallate: changeKeys($mirage, 'pallate-');
+
+$default-theme: (
+  background-color: darken(map-get($mirage, 900), 9%),
+	side-nav-bg-color: darken(map-get($mirage, 900), 0%),
+	side-nav-item-color: darken(map-get($mirage, 900), 5%),
+	side-nav-item-h-color: darken(map-get($mirage, 900), 3%),
+	side-nav-item-active-color: darken(map-get($mirage, 900), 9%),
+  header-bg-color: darken(map-get($mirage, 900), 5%)
+);
+
+$button-theme: (
+  button-base-color: darken(map-get($mirage, 900), 0%),
+  button-base-text-color: darken(map-get($mirage, 900), 0%),
+
+  button-primary: darken(map-get($mirage, 900), 0%),
+  button-secondary: lighten(map-get($mirage, 900), 17%),
+
+  button-light: darken(#d9d9d9, 0%),
+  button-dark: darken(#000, 0%),
+  
+  button-outline: darken(map-get($mirage, 900), 0%),
+  button-success: #43752c,
+  button-warning: #977f1f,
+  button-danger: #752c2c,
+  button-info: #9d9d9d,
 );
 
 .theme-default {
-	@include _setThemeVars($default-theme)
+	@include _setThemeVars($pallate, $default-theme, $button-theme)
 }

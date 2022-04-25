@@ -1,10 +1,23 @@
 import { Layout } from "@/ui/Layout";
-import CategoriesView from "@/ui/pages/CategoriesView";
-import ListsView from "@/ui/pages/ListsView";
-import MainPage from "@/ui/pages/MainPage";
-import BookmarkViews from "@/ui/pages/BookmarksView";
-import SettingView from "@/ui/pages/SettingView";
-import { RouteObject } from "react-router-dom";
+import CategoriesView from "@/routes/pages/CategoriesView";
+import ListsView from "@/routes/pages/ListsView";
+import MainPage from "@/routes/pages/MainPage";
+import BookmarkViews from "@/routes/pages/BookmarksView";
+import SettingView from "@/routes/pages/SettingView";
+import { RouteObject, useNavigate } from "react-router-dom";
+import { createElement, useEffect } from "react";
+
+const NotFundPage = () => {
+  let navigate = useNavigate();
+
+  useEffect(() => {
+  // navigate("/", { replace: true })
+  }, []);
+  
+  return <div>
+    Not found
+  </div>
+}
 
 const Routes: RouteObject[] = [
   {
@@ -30,9 +43,13 @@ const Routes: RouteObject[] = [
       {
         path: '/setting',
         element: <SettingView />,
+      },
+      {
+        path: '*',
+        element: <NotFundPage />
       }
     ]
-  }
+  },
 ];
 
 export default Routes;

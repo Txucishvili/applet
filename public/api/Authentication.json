@@ -4,5 +4,6 @@
     "email": "user@email.com",
     "roles": ["user"],
     "type": "user",
-    "theme": "theme-custom"
+    "theme": "theme-custom",
+    "widgets": ["Widget1"]
 }

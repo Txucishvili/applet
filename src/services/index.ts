@@ -1,5 +1,5 @@
 import { DynamicContext } from "@/store";
-import { DispatchWithoutAction, ReducerWithoutAction } from "react";
+import { DispatchWithoutAction, Reducer, ReducerWithoutAction } from "react";
 import { Context, createContext, createElement, Dispatch, ReducerStateWithoutAction, useContext, useEffect, useReducer } from "react";
 
 export interface DynamicContext {
@@ -64,41 +64,66 @@ interface ProviderInterface<S> {
   children: any
 }
 
-export class DynamicStore<S, A = any> {
-  dispatcher: any;
+interface ActionModel {
+  type?: string;
+  payload?: any;
+}
+
+export class DynamicStore<S, A = ActionModel> {
+  dispatcher: (action: ActionModel) => void;
   isReady: boolean;
   Provider: any;
   state: S;
   context: Context<any>;
-  useContext: () => [S, any];
-  _reducer: (state: any, action: any) => any;
+  useContext: <TS = S, TA = A> () => [TS, (dispatch:  TA) => any];
+  onReady: (any) => any;
+  reducer: ((state: S, action: ActionModel)=> any) | null;
+  _reducer: (state: S, action: ActionModel) => any;
 
   constructor(name, initial: S, reducer?) {
     this.context = createContext<S>(initial);
-    this.useContext = () => useContext<[S, any]>(this.context);
+    this.useContext = () => useContext(this.context);
     this.dispatcher = () => { };
     this.isReady = false;
     this.state = initial;
+    this.reducer = null;
     this._reducer = (state, action) => {
-      return { ...state, ...action };
+      if (this.reducer !== null) {
+        return this.reducer(reducer(state, action), action)
+      }
+
+      return reducer(state, action)
     }
-  
+    this.onReady = (value) => { };
+
     this.Provider = (props: ProviderInterface<S>) => {
-      const [state, dispatch]= useReducer<ReducerWithoutAction<S>, S>(reducer ? reducer : this._reducer, props.initialValue ?? initial, () => props.initialValue ?? initial);
-  
+      const [state, dispatch] = useReducer<Reducer<S, ActionModel>, S>(this._reducer, props.initialValue ?? initial, () => props.initialValue ?? initial);
+
+      if (!this.isReady) {
+        this.dispatcher = dispatch;
+      }
+
       useEffect(() => {
-        if (!this.isReady) {
-          this.dispatcher = dispatch;
-          this.isReady = true;
+        // console.log("------------------------------", name)
+        this.isReady = true;
+        this.onReady(this.isReady);
+
+        return () => {
+          this.isReady = false;
+          this.dispatcher = () => { };
         }
       }, []);
 
       useEffect(() => {
-          this.state = state;
+        this.state = state;
       }, [state]);
-  
+
       return wrapWithProvider(this.context.Provider)({ ...props, value: [state, dispatch] });
     }
+  }
+
+  setReducer(r: Reducer<S, ActionModel>) {
+    this.reducer = r;
   }
 
 }

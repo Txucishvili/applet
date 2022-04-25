@@ -1,0 +1,58 @@
+@import '../functions';
+
+// light theme
+$custom-theme-primary: #123533;
+
+$theme-custom-1: #0d1e2b;
+$theme-custom-2: #132e43;
+$theme-custom-3: #1f4864;
+$theme-custom-4: #f1f4f5;
+$theme-custom-5: #738793;
+
+$firefly2: (
+  50: #f2f8fd,
+  100: #e5f0f9,
+  200: #c5e0f2,
+  300: #92c6e7,
+  400: #58a9d8,
+  500: #328dc5,
+  600: #2371a6,
+  700: #1d5a87,
+  800: #1c4d70,
+  900: #0d1e2b,
+  );
+
+$pallate: changeKeys($firefly2, 'pallate-');
+
+
+
+$custom-theme: (
+	background-color: darken($theme-custom-1, 5%),
+	side-nav-bg-color: $theme-custom-2,
+	side-nav-item-color: $theme-custom-3,
+	side-nav-item-h-color: darken($theme-custom-2, 3%),
+	side-nav-item-active-color: darken($theme-custom-2, 7%),
+  header-bg-color: $theme-custom-2
+);
+
+
+$button-theme: (
+  button-base-color: darken($custom-theme-primary, 10%),
+
+  
+  button-primary: darken($custom-theme-primary, 0%),
+  button-secondary: lighten($custom-theme-primary, 17%),
+
+  button-light: darken(#d9d9d9, 0%),
+  button-dark: darken(#000, 0%),
+
+  button-outline: darken(map-get($firefly2, 700), 0%),
+  button-success: #43752c,
+  button-warning: #977f1f,
+  button-danger: #752c2c,
+  button-info: #9d9d9d,
+);
+
+.theme-simple {
+	@include _setThemeVars($pallate, map-merge($custom-theme, $button-theme))
+}
