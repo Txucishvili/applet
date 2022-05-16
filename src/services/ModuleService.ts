@@ -1,8 +1,9 @@
-import { UserStore } from '@/services/UserService';
-import { RouterService } from '@/store/routerContext';
-import { appNavigation, NavigationService } from "@/store/NavigationService";
-import { DynamicStore } from ".";
-import { InitilizeWidget, WidgetsModule } from './WidgetService';
+import { DynamicStoreState } from "@/store";
+
+enum UserRoles {
+  "user" = 0,
+  "manager" = 1,
+}
 
 const initialUserScheme: any = {
   activeType: null,
@@ -23,27 +24,20 @@ const modulesReducer = (state, action) => {
   return { ...state, ...payload }
 };
 
-export const ModulesStore = new DynamicStore("ModulesStore", modulesInitialState, modulesReducer);
+export const ModulesStore = new DynamicStoreState("ModulesStore", modulesInitialState, modulesReducer);
+
+ModulesStore.onReady = (state) => {
+}
 
 class Modules {
 
   globalModules: any = {};
 
   async initModule(userObj) {
-
-    const scheme = userObj.type;
+    const scheme =  UserRoles[userObj.roles];
 
     const module = await this._loadModules(scheme);
     const sharedModule = await this._loadModules('shared');
-
-    // InitilizeWidget(userObj);
-    
-    NavigationService.init({
-      list: appNavigation.list.concat(module.components.SideNav.Navigations)
-    });
-
-    if (module.components.Routes) RouterService.init(module.components.Routes.routes)
-
 
     Object.assign(globalComponents, {
       activeType: scheme,
@@ -52,16 +46,17 @@ class Modules {
       shared: sharedModule,
     });
 
-    module.Initilizer.init();
+    module.Initilizer.onInit();
 
     Object.assign(modulesInitialState, { activeModule: 1, currentType: scheme })
   }
 
   async switchModule(user) {
-    const {scheme = user.type, widgets} = user;
+    const { scheme = user.type, widgets } = user;
     if (scheme == globalComponents.activeType) {
       return;
     }
+
 
     const module = await this._loadModules(scheme);
     const sharedModule = await this._loadModules('shared');
@@ -70,14 +65,6 @@ class Modules {
       globalComponents.instance.onDestroy();
     }
 
-    // attach
-    // if (WidgetsModule == null) {
-    //   await InitilizeWidget(user);
-    //   WidgetsModule.setWidgets(widgets);
-    // } else {
-    //   WidgetsModule.setWidgets(widgets);
-    // }
-
     Object.assign(globalComponents, {
       activeType: scheme,
       module: module.components,
@@ -85,50 +72,35 @@ class Modules {
       shared: sharedModule,
     })
 
-    module.Initilizer.init();
+    module.Initilizer.onInit();
     this.setModule(scheme);
-    // console.log('[Module loaded for]',globalComponents)
+    console.log('[Module loaded for]',ModulesStore.isReady)
   }
 
   setModule(type) {
-    ModulesStore.dispatcher({
+    ModulesStore.dispatch({
       payload: {
         currentType: type
       }
     })
-
-    NavigationService.setNavFor({
-      list: appNavigation.list.concat(globalComponents.module.SideNav.Navigations)
-    });
-
-    if (globalComponents.module.Routes) {
-      RouterService.set(globalComponents.module.Routes.routes)
-    } else {
-      RouterService.reset()
-    }
-
   }
 
   deleteModule() {
-    Object.assign(globalComponents, initialUserScheme);
+    globalComponents.instance.onDestroy(() => {
+      Object.assign(globalComponents, initialUserScheme);
 
-    NavigationService.setNavFor({
-      list: appNavigation.list
+      ModulesStore.dispatch({
+        payload: {
+          currentType: 'index'
+        }
+      })
     });
-
-    RouterService.reset()
-    // WidgetsModule.reset();
-
-    ModulesStore.dispatcher({
-      payload: {
-        currentType: 'index'
-      }
-    })
   }
 
   async _loadModules(scheme) {
     return import(
       /* webpackChunkName: "user-modular" */
+      /* webpackMode: "lazy" */
       `../schemes/${scheme}.ts`
     ).then(async m => {
       return m;

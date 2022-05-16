@@ -1,40 +1,18 @@
-import WidgetsModular, { WidgetsModule, WidgetsStore } from '@/services/WidgetService';
-import Button from '@/ui/Shared/Button/Button';
-import Form from '@/ui/Shared/Form';
+import { WIDGETS_KEYS } from '@/modules/Widgets';
+import { UserStore } from '@/services/AuthService';
+import { WidgetsStore } from '@/services/WidgetService';
 import { WidgetRenderer } from '@/utils/WidgetRenderer';
-import axios from 'axios';
-import { useFormik } from 'formik';
 import { memo, useEffect, useState } from 'react';
-import * as Yup from 'yup';
+import loadModules from './files/load';
+// const importAll = require('../../macros/import-all.macro');
+// import preval from 'preval.macro';
 
-const ButtonsView = () => {
-
-  useEffect(() => {
-
-  })
-  return <div className='divide-list-h-10' style={{ display: 'flex' }}>
-    <Button
-      onClick={() => {
-        axios.post('http://localhost:5000/auth/login', 
-        {email: 'string', password: 'string'})
-        .then(r => { console.log(r) })
-      }}
-      variant='primary' text='primary' />
-    <Button variant='secondary' text='secondary' />
-    <Button variant='outline' text='outline' />
-    <Button variant='light' text='light' />
-    <Button variant='dark' text='dark' />
-    <Button variant='success' text='success' />
-    <Button variant='warning' text='warning' />
-    <Button variant='danger' text='danger' />
-    <Button variant='info' text='info' />
-  </div>
-}
 
 export function MainPageView({ children }) {
-  const [widgets, setWidgets]: any = WidgetsStore.useContext();
+  const [widgets, setWidgets]: any = WidgetsStore.use();
 
-  console.log("widgets", widgets)
+
+
 
   return (
     <div>
@@ -43,7 +21,6 @@ export function MainPageView({ children }) {
           <h1>App Main</h1>
         </div>
         <br />
-
 
 
         <br />
@@ -66,32 +43,34 @@ const MainMemo = memo(MainPageView, () => true);
 
 function Main() {
   const [state, setState] = useState({})
-  const [widgets, setWidgets]: any = WidgetsStore.useContext();
-
+  const [widgets, setWidgets]: any = WidgetsStore.use();
+  const [user,] = UserStore.use();
 
   useEffect(() => {
-    console.log("----[setState]", state);
-  }, [state])
-
-
+   loadModules('').then(r => {
+     console.log('object')
+   })
+  }, [])
 
   return (
     <div className='container-outer'>
       <div className="container-xl">
-
+        <p>{user.email}</p>
+        <p>{user.theme}</p>
+        <p>{user.type}</p>
         <div className="row">
           <div className="col-md-6">
             <WidgetRenderer name="Widget1" />
           </div>
           <div className="col-md-6">
-            <WidgetRenderer name="Widget2" />
+            <WidgetRenderer name={WIDGETS_KEYS.Giphy} />
           </div>
 
         </div>
 
         <br />
         <div className="row">
-          <ButtonsView />
+          {/* <ButtonsView /> */}
         </div>
         <br />
 

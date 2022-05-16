@@ -1,17 +1,17 @@
-import { DynamicStore } from "@/services";
 import { memo, useEffect, useState } from "react";
-import Form from '@/ui/Shared/Form';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Button from "@/ui/Shared/Button/Button";
+import { Form, } from "@/ui/Shared";
+import { DynamicStoreState } from "@/store";
 
-const Widget1Store = new DynamicStore("Widget1", { input: "" }, (state, action) => {
+const Widget1Store = new DynamicStoreState("Widget1", { input: "" }, (state, {type, payload}) => {
 
-  return { ...state, input: action }
+  return { ...state, input: payload }
 });
 
 const WidgetMain = (props) => {
-  const [input, setInput] = Widget1Store.useContext();
+  const [input, setInput] = Widget1Store.use();
 
 
   useEffect(() => {

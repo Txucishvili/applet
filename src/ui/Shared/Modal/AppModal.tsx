@@ -1,31 +1,61 @@
 import { Modal, ModalProps } from '@restart/ui'
-import { ModalHandle } from '@restart/ui/cjs/Modal'
-import React from 'react';
+import { BaseModalProps, ModalHandle } from '@restart/ui/cjs/Modal'
+import React, { Children } from 'react';
 import '@sass/components/_modal.scss';
 
-interface AppModal extends ModalProps, React.RefAttributes<ModalHandle> {
+interface AppModal extends BaseModalProps, React.RefAttributes<ModalHandle> {
   preventBackdropClick?: boolean;
+  size?: 'small' | 'medium' | 'large' | 'auto';
+  width?: string | number;
 }
 
-export default function AppModal(props: AppModal) {
-  const { preventBackdropClick = false, ...modalProps } = props;
+enum ModalSizes {
+  small = '550px',
+  medium = '900px',
+  large = '1100px'
+}
 
-  console.log("appmodal")
+interface IModalBody {
+  size?: 'small' | 'medium' | 'large' | 'auto';
+  width?: string | number;
+}
+
+function AppModal(props: AppModal & { children: any }) {
+  const { width, size, preventBackdropClick = false, children, ...modalProps } = props;
 
   return (
     <Modal
       renderBackdrop={(_props) => {
-        // console.log(_props);
-
         return <div {..._props} className='modal--backdrop'></div>
       }}
       className="AppModal"
       {...modalProps}>
-      <div className="modal--wrap">
-        <div className="modal--content">
-          {props.children}
-        </div>
-      </div>
+      {children}
     </Modal>
   )
 }
+
+const ModalSizeBase = ({ size = 'small', children }: IModalBody & { children: any }) => {
+  const modalSize = size !== 'auto' ? { minWidth: ModalSizes[size] } : {}
+  return <div
+    style={{ ...modalSize, width: '100%' }}
+    className="modal--wrap">
+    <div className="modal--content">
+      <div className="modal--body" >
+        {children}
+      </div>
+    </div>
+  </div>
+
+}
+
+const ModalHead = (props) => {
+  return <div className="modal--head">
+    {props.children}
+  </div>
+}
+
+AppModal.Head = ModalHead;
+AppModal.Body = ModalSizeBase;
+
+export default AppModal;

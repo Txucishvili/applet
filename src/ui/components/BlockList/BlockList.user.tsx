@@ -97,7 +97,7 @@ export const UserBlockListComponent: any = (props) => {
   const updateState = useCallback(
     (v) => {
       setstate(v);
-      // BlockListContext.dispatcher({
+      // BlockListContext.dispatch({
       //   type: 'some',
       //   payload: {
       //     value: v

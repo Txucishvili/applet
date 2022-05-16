@@ -1,11 +1,10 @@
 import React, { Suspense } from 'react';
+import WidgetMain from './WidgetMain'
 
-const WidgetMain = React.lazy(() => import('./WidgetMain'));
+// const WidgetMain = React.lazy(() => import('./WidgetMain'));
 
 const Widget2 = () => {
-  return <Suspense fallback={"loading"}>
-     <WidgetMain />
-  </Suspense>
+  return <WidgetMain />
 }
 
 export default Widget2;

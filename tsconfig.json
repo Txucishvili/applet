@@ -20,10 +20,11 @@
     "noEmit": true,
     "noImplicitAny": false,
     "jsx": "react-jsx",
-    "downlevelIteration": false
+    "downlevelIteration": false,
+    "experimentalDecorators": true
   },
   "include": [
     "src"
-, "public/boot"  ],
+, "public/boot", "src/macros"  ],
   "extends": "./tsconfig.base.json"
 }

@@ -1,12 +1,12 @@
-import { DynamicStore } from '@/services';
 import Routes from "@/routes";
+import { DynamicStoreState } from "@/store";
 import { cloneDeep } from 'lodash';
 
 const initialNavigation: any = {
   routes: cloneDeep(Routes)
 };
 
-export const RouterStore = new DynamicStore("navigation", initialNavigation, (state, action) => {
+export const RouterStore = new DynamicStoreState("navigation", initialNavigation, (state, action) => {
 
   switch (action.type) {
     case "ADD_ROUTE":
@@ -28,21 +28,21 @@ export const RouterStore = new DynamicStore("navigation", initialNavigation, (st
   }
 })
 
-
 class RouterServices {
+  isInitialized: boolean = false;
 
   constructor() {
   }
 
   init(initCfg) {
+    this.isInitialized = true;
     initialNavigation.routes[0].children = [].concat(initialNavigation.routes[0].children, initCfg);
   }
 
   set(list) {
-    const childRoutes = [].concat(initialNavigation.routes[0].children, list);
-    const newRouter = cloneDeep(Routes);
-    newRouter[0].children = childRoutes;
-    RouterStore.dispatcher({
+    const newRouter: any = cloneDeep(Routes);
+    newRouter[0].children = [].concat(...newRouter[0].children, ...list);
+    RouterStore.dispatch({
       type: "ADD_ROUTE",
       payload: newRouter
     })
@@ -50,13 +50,13 @@ class RouterServices {
 
   reset() {
     const newRouter = cloneDeep(Routes);
-    RouterStore.dispatcher({
+    RouterStore.dispatch({
       type: "RESET",
       payload: newRouter
     })
   }
 }
 
-export const RouterService: any = new RouterServices();
+export const RouterService = new RouterServices();
 
 export default {};

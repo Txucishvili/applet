@@ -1,23 +1,35 @@
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 // import '@sass/_theme.scss';
 import './App.scss';
 import '@sass/_base.scss';
 import { useRoutes } from 'react-router-dom';
-import { RouterStore } from './store/routerContext';
+import { RouterStore } from './services/RouterService';
+
+
 
 function App() {
-  const [routes, setRoutes]: any = RouterStore.useContext();
+  const [routes, setRoutes]: any = RouterStore.use();
 
-  let element = useRoutes(routes.routes);
-  // console.log("routes changed", routes.routes)
+  // let element = useRoutes(routes.routes);
+
+  let element2 = useMemo(() =>
+    () => {
+      {
+        // console.log('RUTES CHANGED')
+        const Routes = useRoutes(routes.routes);
+        return Routes;
+      }
+    }
+    , [routes]);
+
 
   return (
     <div className="App">
-        {element}
+      {element2()}
     </div>
   );
 }
 
-const AppMemo = memo(App, () => false);
+const AppMemo = App;
 
 export default AppMemo;

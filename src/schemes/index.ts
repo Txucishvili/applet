@@ -1,21 +1,28 @@
-// import * as _ from 'lodash';
+export function ModuleTarget(constructor): any {
+  return class extends constructor {
+    namedValue = 'someValue';
+    
+    constructor(props) {
+      super(props);
+      // constructor.bind(this);
+    }
 
-// console.log("_", _)
+    onInit(cb?) {
+      super.onInit()
+      if (cb instanceof Function) {
+        cb();
+      }
+    }
 
-// const LoadModules = async (modules) => {
-//     await modules.forEach(async (m, i) => {
-//         await import(
-//             /* webpackChunkName: "UserModules" */
-//              `../modules/${m}`
-//          ).then(r => {
-//              console.log("module loaded", r)
-//          })
+    onDestroy(cb?) {
+      super.onDestroy()
 
-//     })
-// }
-
-
-
+      if (cb instanceof Function) {
+        cb();
+      }
+    }
+  };
+};
 
 
 export default {};

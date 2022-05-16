@@ -3,7 +3,7 @@ import '@sass/Layout/Layout.scss';
 import SideNav from './SideNav';
 import Content from './Content';
 import { Outlet } from 'react-router-dom';
-import { NavigationStore } from '@/store/NavigationService';
+import { NavigationStore } from '@/services/NavigationService';
 
 
 interface Props {

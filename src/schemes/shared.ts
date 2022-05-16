@@ -1,7 +1,7 @@
-import { SignOutButton } from "@/modules/Shared";
+import { HeaderUserSide } from "@/modules/Shared";
 
 export const Components = {
-  SignOutButton: SignOutButton
+  SignOutButton: HeaderUserSide
 }
 
 export default Components;

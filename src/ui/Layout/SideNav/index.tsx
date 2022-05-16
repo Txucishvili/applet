@@ -1,4 +1,4 @@
-import { NavigationStore, SharedIconList } from '@/store/NavigationService';
+import { NavigationStore } from '@/services/NavigationService';
 import React, { useEffect } from 'react';
 import { Link, LinkProps, NavLink, useMatch, useResolvedPath } from 'react-router-dom';
 import NavItem from './NavItem';
@@ -29,7 +29,7 @@ function CustomLink({ children, to, ...props }: LinkProps) {
 
 
 const SideNav: React.FC<Props> = (props: Props) => {
-  const [navList, setNavList]: any = NavigationStore.useContext();
+  const [navList, setNavList]: any = NavigationStore.use();
 
   useEffect(() => {
   }, [navList])

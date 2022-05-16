@@ -1,22 +1,25 @@
 import { BlockListContext } from "../../ui/components/BlockList/BlockListContext";
 import BlockListRender from "../../ui/components/BlockList/BlockList";
 import { SwitchComponent } from "@/utils/utils";
-import { useRef, useState } from "react";
-
-
+import { Suspense } from "react";
 
 const TitlerComponent = ({ children }) => {
   return <div>{children}</div>
 }
+
 export enum BlockListSchema {
   BlockList = "BlockList"
 }
 
 
-function CategoriesView() {
-
+const CategoriesViewMain = (props) => {
+ 
   return (
     <div className='container-outer'>
+      <p>
+        {/* Build Date: {dateTimeStamp}. */}
+      </p>
+
       <BlockListContext.Provider>
 
         <SwitchComponent
@@ -30,6 +33,16 @@ function CategoriesView() {
 
       </BlockListContext.Provider>
     </div>
+  )
+}
+
+function CategoriesView() {
+
+
+  return (
+    <Suspense fallback="loading...">
+      <CategoriesViewMain />
+    </Suspense>
   )
 };
 

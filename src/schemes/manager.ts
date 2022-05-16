@@ -1,9 +1,12 @@
 import { createElement } from 'react';
 import { ManagaerBlockList, ManagerActionButtons, TodoItem } from "@/ui/components/BlockList/BlockList.manager";
 import ManagerDashboard from '@/modules/Manager/routes/ManagerDashboard';
-import { SharedIconList } from '@/store/NavigationService';
+import { appNavigation, NavigationService } from '@/services/NavigationService';
+import { RouterService } from '@/services/RouterService';
+import { ModuleTarget } from '.';
+import { SharedIconList } from '@/ui/Icon';
 
-const Components = {
+export let Components = {
   Header: {
   },
   Routes: {
@@ -42,20 +45,41 @@ const Components = {
 
 export const components = Components;
 
-export class ManagarModule {
+interface Modular {
+  type?: string;
+  namedValue?: string | null;
+}
+
+@ModuleTarget
+export class ManagarModule implements Modular {
   type = 'manager';
 
   constructor(props) {
+    // console.log("ManagerModule Constructor", this)
+    NavigationService.init({
+      list: appNavigation.list.concat(Components.SideNav.Navigations)
+    });
+    if (!RouterService.isInitialized) {
+      RouterService.init(Components.Routes.routes);
+    }
   }
 
-  init() {
-    // console.log("[onInit]", this.type)
+  onInit() {
+    console.log("[onInit]", this.type);
+    
+    NavigationService.setNavFor({
+      list: appNavigation.list.concat(Components.SideNav.Navigations)
+    });
+    RouterService.set(Components.Routes.routes);
   }
 
   onDestroy() {
-    // console.log("[onDestroy]", this.type)
+    console.log("[onDestroy]", this.type);
+    RouterService.reset()
+    NavigationService.reset();
   }
 }
+
 
 export let Initilizer = new ManagarModule({});
 

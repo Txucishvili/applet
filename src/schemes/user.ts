@@ -1,5 +1,9 @@
-import { SharedIconList } from "@/store/NavigationService";
+import {appNavigation, NavigationService } from "@/services/NavigationService";
+import { RouterService } from "@/services/RouterService";
 import withUserRule, { TodoItem, UserActionButtons, UserBlockList } from "@/ui/components/BlockList/BlockList.user";
+import { SharedIconList } from "@/ui/Icon";
+import { createElement } from "react";
+import { ModuleTarget } from ".";
 
 const Components = {
   Header: {
@@ -8,9 +12,9 @@ const Components = {
     Navigations: [
       {
         path: '/user',
-        name: "manager",
+        name: "user",
         icon: SharedIconList.menu,
-        label: "Manager Content",
+        label: "User Content",
         sortIndex: 4
       }
     ]
@@ -29,6 +33,8 @@ const Components = {
 export const components = {
   ...Components
 }
+
+@ModuleTarget
 export class Initilizers {
   type = 'user';
 
@@ -36,14 +42,33 @@ export class Initilizers {
     // NavigationService.init({
     //   list: appNavigation.list.concat(components.SideNav.Navigations)
     // });
+    NavigationService.init({
+      list: appNavigation.list.concat(Components.SideNav.Navigations)
+    });
+
+    RouterService.init([{
+      path: '/user',
+      element: createElement('div', )
+    }]);
+
   }
 
-  init() {
-    // console.log("[onInit]", this.type)
+  onInit() {
+    console.log("[onInit]", this.type);
+    NavigationService.setNavFor({
+      list: appNavigation.list.concat(Components.SideNav.Navigations)
+    });
+    
+    RouterService.set([{
+      path: '/user',
+      element: createElement('div', {children: 'user page'}, 'page')
+    }]);
   }
 
   onDestroy() {
-    // console.log("[onDestroy]", this.type)
+    // console.log("[onDestroy]", this.type);
+    RouterService.reset()
+    NavigationService.reset()
   }
 }
 

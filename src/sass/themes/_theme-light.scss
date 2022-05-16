@@ -13,7 +13,38 @@ $light-theme: (
   header-bg-color: darken($light-theme-primary, 5%)
 );
 
+$scorpion: (
+  50: #f7f7f7,
+  100: #e3e3e3,
+  200: #c8c8c8,
+  300: #a4a4a4,
+  400: #818181,
+  500: #5c5c5c,
+  600: #a4a4a4,
+  700: #434343,
+  800: darken(#818181, 7%),
+  900: #5c5c5c,
+);
+$pallate: changeKeys($scorpion, 'pallate-');
+
+$button-theme: (
+  button-base-color: gray,
+  button-base-text-color: orange,
+
+  button-primary: darken(map-get($scorpion, 50), 0%),
+  button-secondary: lighten(map-get($scorpion, 50), 17%),
+
+  button-light: darken(#d9d9d9, 0%),
+  button-dark: darken(#000, 0%),
+  
+  button-outline: darken(map-get($scorpion, 900), 0%),
+  button-success: #43752c,
+  button-warning: #977f1f,
+  button-danger: #752c2c,
+  button-info: #9d9d9d,
+);
 
 .theme-light {
-	@include _setThemeVars($light-theme)
+	@include _setThemeVars($pallate, $light-theme, $button-theme)
+
 }

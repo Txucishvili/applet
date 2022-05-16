@@ -4,14 +4,17 @@
 @import '~bootstrap/scss/bootstrap-grid.scss';
 
 @import 'mixins';
+@import './style';
 
-*, div {
-    box-sizing: border-box;
-    // outline: none;
+*,
+div {
+  box-sizing: border-box;
+  // outline: none;
 
-    &::after, &::before {
-        box-sizing: content-box;
-    }
+  &::after,
+  &::before {
+    box-sizing: content-box;
+  }
 }
 
 
@@ -19,8 +22,31 @@
   @extend %flex;
 }
 
-._fr {
+._fr,
+.to-right {
   margin-left: auto;
+}
+
+._revers {
+  flex-direction: row-reverse;
+}
+
+a {
+  text-decoration: none;
+  color: #FFF;
+
+  &:link {
+    text-decoration: none;
+    color: #FFF;
+  }
+}
+
+.linkEl {
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 
@@ -38,27 +64,66 @@ $directions: 'h',
 'v';
 
 @each $dir in $directions {
-  .divide-list, .divide {
+
+  .divide-list,
+  .divide {
     &-#{$dir} {
       @each $spacer in $spacers {
         &-#{$spacer} {
           >* {
             $direction: null;
-  
+
             @if $dir=='h' {
               $direction: left;
             }
-  
+
             @else {
               $direction: top;
             }
-  
+
             margin-#{$direction}: $spacer+px;
-  
+
             &:first-child {
               margin-#{$direction}: 0px;
             }
           }
+        }
+      }
+    }
+  }
+}
+
+._grid {
+  display: grid;
+}
+
+
+@each $spacer in $spacers {
+  .gap {
+    &-#{$spacer} {
+      gap: $spacer + px
+    }
+  }
+}
+
+@each $dir in $directions {
+
+  .to {
+    &-#{$dir} {
+      @each $spacer in $spacers {
+        &-#{$spacer} {
+          $direction: null;
+
+          @if $dir=='h' {
+            $direction: left;
+          }
+
+          @else {
+            $direction: top;
+          }
+
+          margin-#{$direction}: $spacer+px;
+
         }
       }
     }

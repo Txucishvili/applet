@@ -36,7 +36,7 @@ module.exports = {
     alias(aliasMap)(config);
     scssLoader(['./src/sass/_shared.scss'])(config, env);
     // config = rewireVendorSplitting(config, env);
-    console.log(config)
+    // console.log(config)
 
     // config.optimization = {
 
@@ -81,6 +81,34 @@ module.exports = {
     // },
     //   }
     // }
+
+    // config.optimization = {
+    //   ...config.optimization,
+    //   splitChunks: {
+    //     ...config.optimization.splitChunks,
+    //     chunks: 'async',
+    //     minSize: 20000,
+    //     minRemainingSize: 0,
+    //     minChunks: 1,
+    //     maxAsyncRequests: 30,
+    //     maxInitialRequests: 30,
+    //     enforceSizeThreshold: 50000,
+    //     cacheGroups: {
+    //       defaultVendors: {
+    //         test: new RegExp(
+    //           `[\\/]node_modules[\\/](${path.resolve(__dirname, './src/ui/Shared/index.ts')})[\\/]`
+    //         ),
+    //         priority: -10,
+    //         reuseExistingChunk: true,
+    //       },
+    //       default: {
+    //         minChunks: 2,
+    //         priority: -20,
+    //         reuseExistingChunk: true,
+    //       },
+    //     },
+    //   },
+    // };
 
     if (process.argv.includes('--bundle-report')) {
       config.plugins.push(

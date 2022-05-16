@@ -3,7 +3,7 @@ import { createElement, memo, useCallback, useEffect } from "react";
 
 export const _WidgetRendererHOC: React.FC<any> = (props: any) => {
   const { name } = props;
-  const [widgets,]: any = WidgetsStore.useContext();
+  const [widgets,]: any = WidgetsStore.use();
 
   // console.log('[1]', name);
 
@@ -16,7 +16,7 @@ export const _WidgetRendererHOC: React.FC<any> = (props: any) => {
   useEffect(() => {
     console.log('[Keys Changed]', widgets);
     if (widgets.widgets[name] && !widgets.widgets[name].isLoaded) {
-      WidgetsModule.addWidget(name);
+      // WidgetsModule.addWidget(name);
     }
   }, [widgets.keys]);
 
@@ -105,7 +105,6 @@ export const _WidgetRendererHOC: React.FC<any> = (props: any) => {
 }
 
 export const _WidgetRenderer = memo(_WidgetRendererHOC, () => true);
-
 
 export const WidgetRenderer = (props) => {
   const {children} = props;

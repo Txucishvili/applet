@@ -1,8 +1,4 @@
-import globalComponents from "@/schemes";
-import { DynamicStore } from "@/services";
-import { DynamicStoreState } from "@/services/indexStore";
-import { DynamicContext } from "@/store";
-import { createElement } from "react";
+import { DynamicStoreState } from "@/store";
 
 interface BlockListItem {
   completed: boolean;
@@ -43,14 +39,14 @@ export var BlockListContext = new DynamicStoreState<BlockListModel, BlockListDis
       return { ...state }
       break;
   }
-
+}, {
+  saveState: true
 });
 
 BlockListContext.onReady = (status) => {
-  console.log("BlockListContext OnReady", status);
+  // console.log("BlockListContext OnReady", status);
+  if (!status) {
+    // BlockListContext = null;
+  }
 }
-
-export const NewContext = new DynamicContext({ count: 0 }, (state, payload) => {
-  return Object.assign({ state }, { count: state.count + 1 });
-});
 

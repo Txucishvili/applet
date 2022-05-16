@@ -1,0 +1,118 @@
+.interes-box {
+  &--wrap {
+    border-radius: 12px;
+    background-color: var(---pallate-900);
+    // padding: 20px;
+    // max-width: 350px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: 0px 0px 0px 0px  var(---pallate-800);
+    transition: transform .1s ease-in, box-shadow .125s ease-in-out;
+    // transform: scale(1);
+    z-index: 1;
+    &:hover {
+      z-index: 5;
+      // transform: scale(1.08);
+      box-shadow: 0px 3px 0px 0px  var(---pallate-800);
+    }
+  }
+
+  &--head {
+    @extend %flex;
+    align-items: center;
+    // flex-direction: column;
+    // padding: 20px;
+  }
+
+  &--icon {
+    width: 50px;
+    height: 50px;
+    background-color: var(---pallate-500);
+    border-radius: 100px;
+    margin-right: 20px;
+  }
+
+  &--title {
+    @include Font-DelaGhoticOne(18, 400)
+  }
+
+  &--desc {
+    margin-top: 7px;
+    @include Font-OpenSans(14, 400)
+  }
+
+  &--bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0.5;
+
+    img {
+      width: 100%;
+    }
+
+    &:after {
+      content: "";
+      position: absolute;
+      top: -10%;
+      left: 0;
+      background: linear-gradient(1800deg, rgb(27, 31, 58) 50%, rgba(27, 31, 58, 0.18) 100%);
+      width: 100%;
+      height: 340px;
+    }
+  }
+
+  &--content {
+    z-index: 5;
+    position: relative;
+    padding: 10px 10px;
+  }
+
+  &--body {
+    margin-top: 20px;
+    width: 100%;
+    background-color: var(---side-nav-item-active-color);
+    border-radius: 12px;
+    // padding: 12px;
+  }
+
+  .widget-list {
+    @extend %flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: inherit;
+
+    li {
+      padding: 18px;
+      position: relative;
+      cursor: pointer;
+
+      &:after {
+        content: '';
+        display: block;
+        width: 90%;
+        border-bottom: 1px solid var(---pallate-900);
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      &:last-child {
+        &:after {
+          display: none;
+        }
+      }
+
+      &:hover {
+        background-color: rgba(#FFF, .03);
+
+        &:after {
+          border-color: var(---pallate-800);
+        }
+      }
+    }
+
+  }
+}

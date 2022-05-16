@@ -32,7 +32,7 @@ interface ActionModel {
   type?: string;
   payload?: any;
 }
-
+let count = 0;
 export class DynamicStoreState<S, A = ActionModel> {
   activeReducerKey: any;
   InitialReducer: Reducer<S, A>;
@@ -42,8 +42,15 @@ export class DynamicStoreState<S, A = ActionModel> {
   context: Context<any>;
   isReady: boolean = false;
   dispatch: <DA = ActionModel> (action: DA) => void = (action) => { };
-
-  constructor(name, initial: S, reducer?: Reducer<S, A>) {
+  defaultOptions: any = {
+    saveState: false
+  }
+  options: any;
+  name: string;
+  count: number = 0;
+  
+  constructor(name, initial: S, reducer?: Reducer<S, A>, options?) {
+    this.name = name;
     this.InitialValue = initial ?? {};
     this.InitialReducer = reducer ?? this._simpleReducer;
     this.state = this.InitialValue;
@@ -54,6 +61,10 @@ export class DynamicStoreState<S, A = ActionModel> {
     this.Provider = this.Provider.bind(this);
     this.reducer = this.reducer.bind(this);
     this.use = this.use.bind(this);
+
+    //
+
+    this.options = options ?? this.defaultOptions;
   }
 
   private _simpleReducer(state, action) {
@@ -114,11 +125,17 @@ export class DynamicStoreState<S, A = ActionModel> {
         this.setReady(false);
         this.onReady(false);
         this.setDispatch(() => { });
+        if (this.options.saveState) {
+          this.InitialValue = this.state;
+        }
       }
     }, []);
 
+    // !!!!!
+    this.state = state;
+
     useEffect(() => {
-      this.state = state;
+      // this.state = state;
     }, [state]);
 
     return wrapWithProvider(this.context.Provider)({ ...props, value: [state, dispatch] });

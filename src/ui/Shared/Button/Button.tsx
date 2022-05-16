@@ -47,5 +47,4 @@ const Button: React.FC<ButtonBase> = (props: ButtonBase) => {
   </div>
 }
 
-
 export default Button

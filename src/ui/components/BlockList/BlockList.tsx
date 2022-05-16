@@ -1,13 +1,13 @@
 import React, { createElement, useEffect, useRef } from 'react';
 import TodoItem from '../TodoItem/TodoItem';
 import { BlockListContext, BlockListDispatchs, BlockListModel } from './BlockListContext';
-import { UserStore } from '@/services/UserService';
 import { globalComponents } from '@/services/ModuleService';
 import './BlockList.scss'
 import { ListAPI } from '@/API/ListsAPI';
 import Button from '@/ui/Shared/Button/Button';
 import { WidgetsAPI } from '@/API/WidgetsAPI';
 import { WidgetsModule } from '@/services/WidgetService';
+import { UserStore } from '@/services/AuthService';
 
 const cloneArray = (index, array: any) => {
   const arr: any = [];
@@ -34,7 +34,7 @@ const wrapWithProps = (props) => {
 }
 const RenderItem: any = (props, ref) => {
   // console.log("----------", props, ref)
-  const [user, setUser] = UserStore.useContext();
+  const [user, setUser] = UserStore.use();
 
 
   if (!!user && user.type) {
@@ -58,24 +58,25 @@ const RenderItem: any = (props, ref) => {
 const BlockList = (props: any) => {
   const [todoList, dispatch] = BlockListContext.use();
 
-
   useEffect(() => {
 
-    dispatch({
-      type: "SET_LOADER",
-      payload: true
-    });
-
-    ListAPI.fetchAll().then(r => {
-      const array = cloneArray(1, r);
-
+    if (!todoList.list.length && !todoList.isLoading) {
       dispatch({
-        type: 'SET',
-        payload: {
-          list: array
-        }
+        type: "SET_LOADER",
+        payload: true
       });
-    })
+  
+      ListAPI.fetchAll().then(r => {
+        const array = cloneArray(1, r);
+  
+        dispatch({
+          type: 'SET',
+          payload: {
+            list: array
+          }
+        });
+      })
+    }
 
 
     return () => {
@@ -103,6 +104,7 @@ const BlockList = (props: any) => {
   const installWidget1 = async () => {
     await WidgetsModule.setWidgets('Widget1');
   }
+  
   const uninstall = async () => {
     await WidgetsModule.removeWidgets('Widget1');
   }
@@ -111,10 +113,10 @@ const BlockList = (props: any) => {
 
 
   return <div className='container-xl'>
-    <Button variant='primary' text='refresh' onClick={refreshList} />
+    {/* <Button variant='primary' text='refresh' onClick={refreshList} />
     <Button variant='primary' text='add widget 1' onClick={installWidget1} />
     <Button variant='primary' text='uninstall widget 1' onClick={uninstall} />
-    <br />
+    <br /> */}
     {todoList.isLoading ? 'loading...' : null}
     <div className="row">
       {todoList.list.length ? todoList.list.map((todo, key) => {

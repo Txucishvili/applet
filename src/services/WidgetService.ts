@@ -1,16 +1,12 @@
+import { DynamicStoreState } from '@/store';
 import { cloneDeep } from 'lodash';
-import {
-  DynamicStore
-} from './index';
 
-export let WidgetsModule: any = null;
-
-const initialState = {
+const initialState: any = {
   widgets: {},
   keys: []
 };
 
-export const WidgetsStore = new DynamicStore("WidgetsStore", initialState, (state, action) => {
+export const WidgetsStore = new DynamicStoreState("WidgetsStore", initialState, (state, action) => {
   switch (action.type) {
     case "SET_WIDGETS":
       const _localData = {};
@@ -73,7 +69,7 @@ export const WidgetsStore = new DynamicStore("WidgetsStore", initialState, (stat
       // console.log("new keys", state.keys.filter((w) => w !== action.payload))
       const _removedWidgets = { ...state.widgets };
       const _removedKeys = [...state.keys];
-      const current = state.keys.find(i => i === action.payload);
+      const current: any = state.keys.find(i => i === action.payload);
 
       _removedKeys.splice(state.keys.indexOf(current), 1);
       delete _removedWidgets[action.payload];
@@ -98,7 +94,7 @@ export const InitilizeWidget = async (user) => {
       return {
         ...acc,
         ...{
-          [el.id]: {
+          [el.key]: {
             key: el.id,
             isLoaded: false,
             isLoading: false,
@@ -119,7 +115,6 @@ export const InitilizeWidget = async (user) => {
       // console.log("Setting up widgets", user.widgets)
     }
     r();
-
   })
 }
 
@@ -136,7 +131,7 @@ class WidgetsModular {
     _requestList = _requestList.concat(widget);
     // console.log("Setting widget", widget)
 
-    WidgetsStore.dispatcher({
+    WidgetsStore.dispatch({
       type: "SET_WIDGETS",
       payload: _requestList
     });
@@ -145,7 +140,7 @@ class WidgetsModular {
   async loadWidget(widget: string) {
     // this.setWidgets(widget);
 
-    WidgetsStore.dispatcher({
+    WidgetsStore.dispatch({
       type: "LOAD_WIDGET",
       payload: widget
     });
@@ -156,7 +151,7 @@ class WidgetsModular {
     //   return;
     // }
     // console.log("LOADED")
-    // WidgetsStore.dispatcher({
+    // WidgetsStore.dispatch({
     //   type: "LOAD_WIDGET_DONE",
     //   payload: widget
     // });
@@ -167,7 +162,7 @@ class WidgetsModular {
 
 
   removeWidgets(w) {
-    WidgetsStore.dispatcher({
+    WidgetsStore.dispatch({
       type: "REMOVE",
       payload: w
     })
@@ -176,7 +171,7 @@ class WidgetsModular {
   reset() {
     this.widgets = {};
     this.widgetsKey = [];
-    WidgetsStore.dispatcher({
+    WidgetsStore.dispatch({
       type: "RESET"
     })
   }
@@ -202,6 +197,7 @@ class WidgetsModular {
   }
 
 }
+export let WidgetsModule: WidgetsModular;
 
 // const WidgetsModule = new WidgetsModule()
 

@@ -1,28 +1,40 @@
 import { UsersLocalDataAPI } from '@/API/UsersAPI';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isEqual } from 'lodash';
 import { HTTPSuccess, HTTPSuccessType } from './index';
+import { InitialWidgetList } from './WidgetsList';
+
+interface IWidget {
+  id: string | number;
+  name: string;
+  desc: string;
+  avatar: string | any;
+}
 
 // local 
+
 
 export class LocalWidgets {
   widgetsList: any;
 
   constructor() {
-    const _widgetList = Array(17).fill(null).map((w, key) => {
+    const _widgetList = InitialWidgetList.map((w, key) => {
       return {
-        id: `Widget${key}`,
-        name: `Widget ${key}`,
-        desc: 'desc of widgett',
+        ...w,
         installed: false
       }
     });
 
+    
     if (!localStorage.getItem('widgets')) {
       localStorage.setItem("widgets", JSON.stringify(_widgetList))
-    }
-    const localWidgets: any = localStorage.getItem('widgets');
+    } 
 
-    this.widgetsList = cloneDeep(JSON.parse(localWidgets));
+
+    const _localWidgets: any = localStorage.getItem('widgets');
+    const localWidgets: any = JSON.parse(_localWidgets);
+
+    // this.widgetsList = cloneDeep(_widgetList);
+    this.widgetsList = cloneDeep(localWidgets);
   }
 
   _setItems(list) {
@@ -62,15 +74,6 @@ export class LocalWidgets {
     });
 
     this._updateState(this.widgetsList);
-    console.log("this.widgetsList installWidget", widgetItem)
-
-
-    // Comunication API
-    // UsersLocalDataAPI.updateUserInfo('any', {
-    //   widgets: [].concat(UsersLocalDataAPI.currentUser.widgets, id)
-    // })
-
-    // s//////
 
     return new Promise((r) => {
       r(new HTTPSuccess({
@@ -88,7 +91,6 @@ export class LocalWidgets {
     });
 
     this._updateState(this.widgetsList);
-    console.log("this.widgetsList installWidget", widgetItem)
 
 
     return new Promise((r) => {

@@ -13,9 +13,9 @@ const WidgetRenderMemo = memo(WidgetRender, () => true)
 
 export const WidgetRenderers = (props) => {
   const { children, name, widgets } = props;
-  // const [widgets, setWidgets]: any = WidgetsStore.useContext();
+  // const [widgets, setWidgets]: any = WidgetsStore.use();
 
-  console.log("[WidgetRender]", name, widgets);
+  // console.log("[WidgetRender]", name, widgets);
 
   useEffect(() => {
     if (widgets.widgets[name] && !widgets.widgets[name].isLoaded && !widgets.widgets[name].isLoading) {
@@ -29,7 +29,7 @@ export const WidgetRenderers = (props) => {
   } else if (widgets.widgets[name] && !widgets.widgets[name].isLoaded && widgets.widgets[name].isLoading) {
     return <div>Loading... {name}</div>
   } else {
-    const WidgetComponent = lazy(() => import(`@/modules/Widgets/${name}/${name}`));
+    const WidgetComponent = lazy(() => import(`@/modules/Widgets/${name}/index`));
 
     return <Suspense key={1} fallback={'loading'}>
       <WidgetComponent />
@@ -38,7 +38,6 @@ export const WidgetRenderers = (props) => {
 };
 
 export const WidgetRendererMemo = memo(WidgetRenderers, (prevProps, nextProps) => {
-  console.log("WidgetRenderer-", nextProps.name, prevProps.widgets.keys.includes(nextProps.name) && !nextProps.widgets.keys.includes(nextProps.name) || !prevProps.widgets.keys.includes(nextProps.name) && nextProps.widgets.keys.includes(nextProps.name))
   if (
     prevProps.widgets.keys.includes(nextProps.name) && !nextProps.widgets.keys.includes(nextProps.name)
     || !prevProps.widgets.keys.includes(nextProps.name) && nextProps.widgets.keys.includes(nextProps.name)) {
@@ -49,7 +48,8 @@ export const WidgetRendererMemo = memo(WidgetRenderers, (prevProps, nextProps) =
 
 const withWidgets = (c) => {
   return (props) => {
-    const [widgets, setWidgets]: any = WidgetsStore.useContext();
+    const [widgets, setWidgets]: any = WidgetsStore.use();
+    // console.log("widgets", widgets)
     if(!widgets.keys.includes(props.name)) {
       return null;
     }

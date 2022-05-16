@@ -5,7 +5,7 @@ interface Props {
 }
 
 const ThemeSwitcherButtons = (props: Props) => {
-  const [theme, dispatch] = ThemeStore.useContext();
+  const [theme, dispatch] = ThemeStore.use();
 
   function _setTheme(e) {
     dispatch({

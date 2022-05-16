@@ -1,3 +1,4 @@
+import Button from "@/ui/Shared/Button/Button";
 
 const Widget2Main = () => {
   const boxSize = 220;
@@ -5,6 +6,7 @@ const Widget2Main = () => {
   
   return <div>
     <div style={{display: 'flex'}}>
+      <Button variant="primary" />
     <div style={{
       width: '220px',
       height: '220px',

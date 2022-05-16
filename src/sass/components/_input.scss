@@ -17,8 +17,8 @@
 }
 
 .input {
-  &--text {
-    input[type='text'] {
+  &--text, &--password, &--email {
+    input {
       width: 100%;
       background-color: var(---side-nav-item-h-color);
       color: #FFF;

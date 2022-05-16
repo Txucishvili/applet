@@ -20,15 +20,17 @@ const InputTypeSwitch = (props) => {
       break;
 
     default:
+      return Text(props);
       break;
   }
   return null;
 }
 
 const FormField = (props: InputModel) => {
-  const { label, ...inputFields } = props;
+  const { label,formik, ...inputFields } = props;
 
   const InputTarget = InputTypeSwitch(inputFields);
+  const hasError = formik && formik.touched && formik.error;
 
   return (
     <div className="form--field--wrap">
@@ -36,12 +38,12 @@ const FormField = (props: InputModel) => {
         classNames(
           'form--field',
           `form--field--type-${inputFields.type}`,
-
+          {'error': hasError}
         )
       }>
         {label
           ? <div className="form--field-label">
-            {label}
+            <p>{label}</p>
           </div>
           : null}
         <div className="form--field-input">
@@ -50,9 +52,9 @@ const FormField = (props: InputModel) => {
         </div>
       </label>
       {
-        props.formik && props.formik.touched && props.formik.error
+        formik && formik.touched && formik.error
           ? <div className="form--field--errors">
-            {props.formik['error']}
+            {formik['error']}
           </div>
           : null
       }

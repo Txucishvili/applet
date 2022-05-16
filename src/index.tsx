@@ -1,23 +1,38 @@
 // 
 // booting app
 // 
-import { bootConfig, checkUser } from "./boot/boot";
+import { bootConfig } from "./boot/boot";
+import AuthAPI from "@/services/API/AuthAPI";
+import { AuthService } from "./services/AuthService";
 
 const _bootstrapApp = async () => {
   const appConfig: any = bootConfig();
 
-  const bootStrap = import( /* webpackChunkName: "appboot" */'./boot/app-boot');
-  let user;
+  let userReq;
 
-  if (!!appConfig.userToken) {
-    user = checkUser(appConfig.userToken);
+  if (appConfig.userToken) {
+    userReq = AuthAPI.validateToken(appConfig.userToken)
+    .then(r => {
+      return r;
+    }).catch(e => {
+      Object.assign(appConfig, {
+        errors: { user: true },
+      });
+      return 'error';
+    });
   }
 
-  await Promise.all([bootStrap, user]).then((resp) => {
-    const [boot, user] = resp;
+  const bootStrap = import( /* webpackChunkName: "appboot" */ './boot/app-boot')
 
-    if (!!user) {
-      Object.assign(appConfig, { theme: { theme: user.data.theme }, user: user.data });
+  await Promise.all([bootStrap, userReq]).then(async (resp) => {
+    const [boot, userResp] = resp;
+
+    if (userResp && userResp.data) {
+      Object.assign(appConfig, {
+        theme: userResp.data.theme,
+        user: userResp.data,
+        token: appConfig.userToken
+      });
     }
 
     boot.default(appConfig);

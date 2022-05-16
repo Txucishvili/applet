@@ -3,7 +3,7 @@ import Button from '@/ui/Shared/Button/Button';
 import { SwitchComponentProps } from '@/utils/utils';
 import EventEmitter from 'eventemitter3';
 import { memo, useEffect, useRef, useState } from 'react';
-import AppModal from '../../Shared/Modal/AppModal';
+import {AppModal} from '@/ui/Shared';
 import { BlockListContext, BlockListDispatchs, BlockListModel } from './BlockListContext';
 
 let eventEmitter = new EventEmitter();
@@ -41,15 +41,15 @@ export const ManagerActionButtonss = (props) => {
   }
 
   return (
-    <div>
-      <button onClick={() => onClickOut({ action: 'EDIT', value: props.el })} >edit</button>
-      <button onClick={() => onClickOut({ action: 'DELETE', value: props.el })} >delete</button>
-      <button>move</button>
+    <div className='_flx'>
+      <Button variant='outline' size='small' onClick={() => onClickOut({ action: 'EDIT', value: props.el })} >edit</Button>
+      <Button variant='outline' size='small' onClick={() => onClickOut({ action: 'DELETE', value: props.el })} >delete</Button>
+      <Button variant='outline' size='small'>move</Button>
     </div>
   )
 }
 
-export const ManagerActionButtons = memo(ManagerActionButtonss, () => true)
+export const ManagerActionButtons = ManagerActionButtonss
 
 export function TodoItem(props: any) {
   const { item, actionButtons }: any = props ?? {};
@@ -94,13 +94,13 @@ export const ManagerBlockListComponent: any = (props) => {
   useEffect(() => {
     let reducerKey: any = { key: 'ManagerReducer' };
 
-    console.log("Manager init", props);
+    // console.log("Manager init", props);
 
     BlockListContext.addReducer<NewDispatchs>(reducerKey, (state, { type, payload }) => {
       switch (type) {
         case 'DELETE':
-          // const newList = state.list.filter((e) => e.id !== payload.id);
-          return { ...state };
+          const newList = state.list.filter((e) => e.id !== payload.id);
+          return { ...state, list: newList };
           break;
         default:
           return { ...state }
@@ -159,7 +159,7 @@ export const ManagaerBlockList = (props: SwitchComponentProps) => {
     }
   }
 
-  console.log("----", props.children)
+  // console.log("----", props.children)
   const _childs: any = mapChildsWithKey(propsBinding, props.children);
 
   return <div key="BlockListWrap">

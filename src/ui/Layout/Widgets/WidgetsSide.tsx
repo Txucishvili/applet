@@ -1,11 +1,12 @@
-import { SharedIconList } from '@/store/NavigationService'
-import AppModal from '@/ui/Shared/Modal/AppModal'
+import {AppModal} from '@/ui/Shared';
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import '@sass/components/widget-modal/_widget-modal.scss';
 import Button from '@/ui/Shared/Button/Button';
 import { WidgetsModule, WidgetsStore } from '@/services/WidgetService';
 import { cloneDeep } from 'lodash';
 import { LocalWidgets, WidgetsAPI } from '@/API/WidgetsAPI';
+import { WidgetIcons } from '@/API/WidgetsList';
+import { SharedIconList } from '@/ui/Icon';
 
 interface IWidgetModal {
   list: any[];
@@ -24,26 +25,29 @@ const WidgetListItem = (props) => {
       }
 
       const installCallback = (status) => {
-        // setInstall(false);
+        setInstall(false);
       }
 
-      // setInstall(true);
+      setInstall(true);
       props.onInstallClick(item, installCallback);
     },
     [installing],
   )
 
   return <div className='widget-list widget-list--item'>
-    <div className="item--image"></div>
+    <div className="item--image" key={item.id}>
+      {WidgetIcons[item.name]}
+      {/* <img src={item.avatar} alt="" /> */}
+    </div>
     <div className="item--body">
       <div onClick={() => {
-        console.log('e', item)
+        // console.log('e', item)
       }} className="item--title">
         {item.name}
       </div>
       <div className="item--desc">
         {item.desc}
-        <p>{installing.toString()}</p>
+        {/* <p>{installing.toString()}</p> */}
       </div>
     </div>
     <div className="item--action">
@@ -76,7 +80,7 @@ const WidgetModal = (props: IWidgetModal) => {
           <div className="row">
             {!props.list.length ? 'loading...' : null}
             {props.list.map((widget, key) => {
-              return <div key={key} className='col-md-6 item'>
+              return <div key={widget.id} className='col-md-6 item'>
                 <WidgetListItem onInstallClick={(e, cb) => props.onInstallClick(key, cb)} item={widget} />
               </div>
             })}
@@ -91,7 +95,7 @@ export function _WidgetsSide() {
   const [modal, setModal] = useState(false)
   const [widgetsList, setwidgetsList]: any = useState([]);
 
-  console.log('------------')
+  // console.log('------------')
 
   useEffect(() => {
     WidgetsAPI.getAll().then((r) => {
@@ -111,15 +115,15 @@ export function _WidgetsSide() {
       await sleep(300);
       installResp = await WidgetsAPI.installWidget(widgetsList[e].id);
       if (installResp.status) {
-        console.log("[installed resp]", installResp)
-        await WidgetsModule.setWidgets(widgetsList[e].id);
+        // console.log("[installed resp]", installResp)
+        await WidgetsModule.setWidgets(widgetsList[e].key);
       }
 
     } else {
       await sleep(300);
       installResp = await WidgetsAPI.removeWidget(widgetsList[e].id);
       if (installResp.status) {
-        await WidgetsModule.removeWidgets(widgetsList[e].id);
+        await WidgetsModule.removeWidgets(widgetsList[e].key);
       }
     }
 
@@ -134,7 +138,7 @@ export function _WidgetsSide() {
       // widgetsList[e] = installResp.data;
       widgetsList[e].installed = !widgetsList[e].installed
       
-      // cb(e);
+      cb(e);
     }
 
   }, [widgetsList])
