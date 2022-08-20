@@ -19,6 +19,13 @@ class UserAPIs {
     })
   }
 
+  checkEmail(email: string) {
+    return new Promise(async r => {
+      const userResp = axios.post('http://localhost:5000/user/checkEmail', { email });
+      r(userResp);
+    })
+  }
+
   validateToken(token) {
     return new Promise((resolve, reject) => {
       axios.post('http://localhost:5000/auth/validate', {token})

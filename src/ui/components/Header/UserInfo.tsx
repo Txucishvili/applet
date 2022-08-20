@@ -1,15 +1,13 @@
-import React, { createRef, Fragment, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import { createRef, Fragment, useEffect, useRef, useState } from 'react'
 import { AppModal, Button } from '@/ui/Shared'
 import { AuthService, UserStore } from '@/services/AuthService';
-import classNames from 'classnames';
-import DropDown from '@/ui/Shared/DropDown';
 import AccountBox from './AccountBox';
-import { IAuthFormProps, SignInForm, SignUpForm } from '../Forms/AuthorizationForms';
-import { useRequest } from 'ahooks';
+import { SignInForm, SignUpForm, SignUpValidationSchema } from '../Forms/AuthorizationForms';
+import { useDebounceEffect, useRequest } from 'ahooks';
 import UserAPI from '@/services/API/AuthAPI';
-import { ModalHandle } from '@restart/ui/cjs/Modal';
-import { AuthenticationModal, ModalActive } from '../Modals/AuthenticationModal';
+import { ModalActive } from '../Modals/AuthenticationModal';
 import SwitchAccountModal, { SwitchModalActionsProps } from '../Modals/SwitchAccountModal';
+import { Formik } from 'formik';
 
 export type ModalState = 'Auth' | 'AddNewUser';
 
@@ -23,11 +21,26 @@ export default function UserInfo() {
   const isMounted = useRef<boolean>(false);
 
   let authModalRef: any = createRef();
-  let formRef: any = createRef();
   let signInFormRef: any = createRef();
   let signUpFormRef: any = createRef();
 
-  const { runAsync, loading } = useRequest(UserAPI.signIn, {
+
+  const [signInInitalValues, setLoginInitial] = useState({
+    email: '',
+    password: ''
+  });
+
+  const [signUpFromInitial, setSignUpInitial] = useState({
+    email: "",
+    firstName: "",
+    lastName: "",
+    userName: "",
+    password: "",
+    confPassword: "",
+  });
+
+
+  const { runAsync: signInAsync, loading } = useRequest(UserAPI.signIn, {
     manual: true,
     onSuccess: async (e: any) => {
       if (modalState == 'AddNewUser') {
@@ -49,38 +62,53 @@ export default function UserInfo() {
     }
   });
 
+  // const { runAsync: checkEmailAsync } = useRequest(UserAPI.checkEmail, {
+  //   manual: true,
+  //   onSuccess: async (e: any) => {
+  //     console.log('[checkEmailAsync]', e);
+  //     if (e.data.status == 400) {
+  //       console.log('e', e)
+  //       signUpFormRef.form.setFieldError('email', 'error on email')
+  //     }
+  //   },
+  //   onError: (e) => {
+  //     console.log('[checkEmailAsync] - error', signUpFormRef.form);
+  //     signUpFormRef.form.setFieldError('email', 'error on email')
+  //   }
+  // });
+
+
+
   useEffect(() => {
-    console.log('appModalRef', authModalRef);
+    // console.log('appModalRef', authModalRef);
     isMounted.current = true;
   }, [])
 
-  const openSignIn = () => {
-    setModal(true);
-    setActiveView('SignIn')
-    // authModalRef.openSignIn();
-    // modalState = 'Auth';
-  }
-
-  const openSignUp = () => {
-    setActiveView('SignUp')
-    setModal(true);
-    // authModalRef.openSignUp();
-  }
-
   useEffect(() => {
-      if (!isMounted) {
-        return
-      }
-      setModalState(switchModal ? 'AddNewUser' : 'Auth');
+    if (!isMounted) {
+      return
+    }
+    setModalState(switchModal ? 'AddNewUser' : 'Auth');
 
   }, [switchModal])
 
   useEffect(() => {
-    if (!modal) {
-      setInitialValues({email: '', password: ''})
+    if (activeView == 'SignUp' && (signInInitalValues.email.length || signInInitalValues.password.length)) {
+      // setLoginInitial({ email: '', password: '' })
     }
-  }, [modal])
-  
+  }, [activeView])
+
+  const openSignIn = () => {
+    setModal(true);
+    setActiveView('SignIn')
+  }
+
+  const openSignUp = () => {
+    setModal(true);
+    setActiveView('SignUp')
+  }
+
+
   const onSwitchModalAction = (action: SwitchModalActionsProps['action'], value: any) => {
     const { } = value;
     switch (action) {
@@ -112,8 +140,6 @@ export default function UserInfo() {
 
   }
 
-  const [signInInitalValues, setInitialValues] = useState({email: '', password: ''})
-  
   return (
     <Fragment>
       {modalState}
@@ -162,6 +188,7 @@ export default function UserInfo() {
               </div>}
           </AppModal.Head>
 
+
           {activeView == 'SignIn'
             ? <SignInForm
               ref={(ref) => (signInFormRef = ref)}
@@ -169,36 +196,39 @@ export default function UserInfo() {
               onSubmit={() => {
                 signInFormRef.form.submitForm();
                 console.log('{FORM VALID}', signInFormRef);
-
                 signInFormRef.form.validateForm().then(r => {
                   if (!Object.entries(r).length) {
-                    runAsync(signInFormRef.form.values.email, signInFormRef.form.values.password);
+                    signInAsync(signInFormRef.form.values.email, signInFormRef.form.values.password);
                   }
                 });
               }}
             />
-            : <SignUpForm
-              ref={(ref) => (signUpFormRef = ref)}
+            :
+            <Formik
+              validationSchema={SignUpValidationSchema}
+              initialValues={signUpFromInitial}
+              validateOnChange={true}
               onSubmit={(e) => {
-                setTimeout(() => {
-                  console.log('{FORM VALID}', e, signInFormRef);
-                }, 1500);
-                signUpFormRef.form.submitForm();
-
-                signUpFormRef.form.validateForm().then(r => {
-                  console.log('signUpFormRef.form', signUpFormRef.form)
-
-                  if (!Object.entries(r).length) {
-                    setInitialValues({
-                      email: signUpFormRef.form.values.email,
-                      password: signUpFormRef.form.values.password
-                    })
-                    setActiveView('SignIn')
- 
-                  }
-                });
+                console.log('onFormikSubmit', e);
               }}
-            />}
+            >
+              <SignUpForm
+                ref={(ref) => (signUpFormRef = ref)}
+                initialValues={signUpFromInitial}
+                onEmailCheck={(email) => {
+                  // console.log('checkEmail', email);
+                  // signUpFormRef.form.setFieldError('email', 'email');
+                  // checkEmailAsync(email)
+                }}
+                onSubmit={() => {
+                  console.log('------')
+                  // signUpFormRef.form.handleSubmit();
+                  // setActiveView('SignIn');
+                  // setLoginInitial({ email: 'some@example.com', password: 'some' });
+                }}
+              />
+            </Formik>
+          }
 
           {modalState == 'Auth'
             ? <div>

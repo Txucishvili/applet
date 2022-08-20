@@ -33,7 +33,13 @@
 .widget-list {
   &--item {
     @extend %flex;
+    border-radius: 4px;
 
+    padding-right: 12px;
+    align-items: center;
+      &:hover {
+        background-color: rgba(#000, .09);
+    }
 
 
     .item {
@@ -70,7 +76,11 @@
       &--action {
         margin-left: auto;
       }
+      
+
     }
+
+
   }
 
   .item {

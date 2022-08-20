@@ -3,21 +3,70 @@ import Grid from "@/ui/Layout/Grid";
 import { Form } from "@/ui/Shared";
 import { Button } from "@ui/Shared";
 import { useDebounceEffect, useRequest } from "ahooks";
-import { useFormik } from "formik";
-import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { FormikContextType, useFormik, useFormikContext } from "formik";
+import React, { useEffect, useImperativeHandle, useState } from "react";
 import * as Yup from 'yup';
 
 export interface IAuthFormProps extends React.PropsWithRef<any> {
   onSubmit: any;
+  initialValues: any;
 }
 
-interface IFormProps {
+interface IFormProps<InitialValue> {
   onSubmit: any;
   formRef?: React.ForwardedRef<any>;
-  initialValues?: any;
+  initialValues?: InitialValue;
 }
 
-export function SignInForms(props: IFormProps) {
+interface IFormSignUpProps {
+  onEmailCheck?: (props: string) => void;
+}
+
+interface SignInFromValues {
+  email: string,
+  password: string,
+}
+interface SignUpFromValues {
+  email: string,
+  firstName: string,
+  lastName: string,
+  userName: string,
+  password: string,
+  confPassword: string
+}
+
+export const SignInValidationSchema = Yup.object().shape({
+  email: Yup.string()
+    .required("Required"),
+  password: Yup.string()
+    .min(4, "Must be more than 8 characters")
+    .required("Required"),
+});
+
+export const SignUpValidationSchema = Yup.object().shape({
+  email: Yup.string()
+    .email()
+    .required("Required")
+  ,
+  firstName: Yup.string()
+    .min(4, "Must be more than 4 characters")
+    .required("Required"),
+  lastName: Yup.string()
+    .min(4, "Must be more than 4 characters")
+    .required("Required"),
+  password: Yup.string()
+    .min(8, "Must be more than 8 characters")
+    .required("Required"),
+  confPassword: Yup.string()
+    .required("Required")
+    .oneOf([Yup.ref('password'), null], 'Passwords must match'),
+  userName: Yup.string()
+    .min(4, "Must be more than 4 characters")
+    .required("Required"),
+});
+
+
+export function SignInForms(props: any) {
   const [isLoading, setLoading] = useState<boolean>(false);
 
   useImperativeHandle(props.formRef, () => ({
@@ -106,7 +155,42 @@ export function SignInForms(props: IFormProps) {
 
 }
 
-export function SignUpForms(props: IFormProps) {
+export function SignUpForms(props: IFormProps<SignUpFromValues> & IFormSignUpProps) {
+
+  const [emailChecking, setEmailChecking] = useState(false)
+
+  const { runAsync: checkEmailAsync } = useRequest(UserAPI.checkEmail, {
+    manual: true,
+    onSuccess: async (e: any) => {
+      if (e.data.status == 400) {
+        formik.registerField('emailCheck', {
+          validate: (e) => {
+            return 'Error on checkEmail';
+          }
+        });
+
+        formik.validateField('emailCheck');
+        
+        if (!formik.getFieldMeta('email').touched) {
+          formik.setTouched({
+            email: true
+          });
+        }
+      } else {
+        formik.setFieldError('emailCheck', undefined);
+        formik.unregisterField('emailCheck');
+      }
+
+      setEmailChecking(false)
+
+      props.onEmailCheck?.(formik.values.email);
+
+    },
+    onError: (e) => {
+      console.log('[checkEmailAsync] - error', e);
+      setEmailChecking(false)
+    }
+  });
 
   useImperativeHandle(props.formRef, () => ({
     focus: () => {
@@ -115,64 +199,39 @@ export function SignUpForms(props: IFormProps) {
     form: formik
   }));
 
-  const formik = useFormik({
-    initialStatus: 'none',
-    validateOnChange: true,
-    initialValues: {
-      email: "",
-      firstName: "",
-      lastName: "",
-      userName: "",
-      password: "",
-      confPassword: "",
-    },
-    async onSubmit(values) {
-      // console.log("[Formik Submit]", values);
-      // props.onSubmit();
+  const formik: FormikContextType<any> = useFormikContext();
 
-    },
-    validationSchema: Yup.object().shape({
-      email: Yup.string()
-        .email()
-        .required("Required"),
-      firstName: Yup.string()
-        .min(4, "Must be more than 4 characters")
-        .required("Required"),
-      lastName: Yup.string()
-        .min(4, "Must be more than 4 characters")
-        .required("Required"),
-      password: Yup.string()
-        .min(8, "Must be more than 8 characters")
-        .required("Required"),
-      confPassword: Yup.string()
-        .required("Required")
-        .oneOf([Yup.ref('password'), null], 'Passwords must match'),
-      userName: Yup.string()
-        .min(4, "Must be more than 4 characters")
-        .required("Required"),
-    }),
-  });
+  // const formik = useFormik({
+  //   initialStatus: 'none',
+  //   validateOnChange: true,
+  //   initialValues: {
+  //     ...props.initialValues
+  //   },
+  //   async onSubmit(values) {
+  //     console.log("[Formik Submit]", values);
+  //     // props.onSubmit();
+
+  //   },
+  //   validationSchema: SignUpValidationSchema,
+  // });
 
   const onSubmit = async (e) => {
-    e.preventDefault()
-    props.onSubmit();
+    e.preventDefault();
+    formik.handleSubmit();
   }
 
-   
-  useDebounceEffect(
-    () => {
+  useDebounceEffect(() => {
+    if (!formik.errors.email && formik.values.email) {
+      setEmailChecking(true)
+      checkEmailAsync(formik.values.email);
+    } else {
+      formik.setFieldError('emailCheck', undefined);
+      formik.unregisterField('emailCheck');
+    }
 
-      if (!formik.errors.email && formik.values.email) {
-        console.log('check')
-      }
-      
-    },
-    [formik.values.email],
-    {
-      wait: 1000,
-    },
+  }, [formik.values.email], { wait: 1000 }
   );
-  
+
   return (
     <div style={{ width: 600 }}>
       <Form.Box autoComplete="off" >
@@ -212,7 +271,6 @@ export function SignUpForms(props: IFormProps) {
                 label="User name"
                 {...formik.getFieldProps('userName')}
                 formik={formik.getFieldMeta('userName')}
-
                 name="userName">
               </Form.Field>
             </Grid.Col>
@@ -220,10 +278,12 @@ export function SignUpForms(props: IFormProps) {
               <Form.Field
                 type={'email'}
                 placeholder='example@mail.com'
-                label="Email"
+                label={'Email ' + emailChecking}
                 {...formik.getFieldProps('email')}
-                formik={formik.getFieldMeta('email')}
-
+                formik={{
+                  ...formik.getFieldMeta('email'),
+                  error: formik.getFieldMeta('emailCheck').error || formik.getFieldMeta('email').error
+                }}
                 name="email">
               </Form.Field>
             </Grid.Col>
@@ -253,7 +313,7 @@ export function SignUpForms(props: IFormProps) {
             </Grid.Col>
           </Grid.Row>
           <div className="btn-area">
-            <Button onClick={onSubmit} type="submit" variant='light' size='large' text='Log in' wide />
+            <Button onClick={onSubmit} type="submit" variant='light' size='large' text='Create account' wide />
           </div>
         </Grid>
       </Form.Box>
@@ -261,11 +321,10 @@ export function SignUpForms(props: IFormProps) {
   )
 }
 
-
-export const SignInForm = React.forwardRef((props: IFormProps, ref) => {
+export const SignInForm = React.forwardRef((props: IFormProps<SignInFromValues>, ref) => {
   return <SignInForms {...props} formRef={ref} />;
 });
 
-export const SignUpForm = React.forwardRef((props: IFormProps, ref) => {
+export const SignUpForm = React.forwardRef((props: IFormProps<SignUpFromValues> & IFormSignUpProps, ref) => {
   return <SignUpForms {...props} formRef={ref} />;
 });
